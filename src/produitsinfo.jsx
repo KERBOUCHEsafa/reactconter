@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
-import { produits} from "./produits.jsx";
-import './produits cart.css';
+import { produits } from "./produits.jsx";
+import './produits-cart.css';
 
 function ProductDetails({ addToCart }) {
 
