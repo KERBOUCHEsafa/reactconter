@@ -85,8 +85,11 @@ function App() {
         <Routes>
           <Route path='/' element={<Dashbored />} />
           <Route path='/produits' element={<Produits />} />
+          <Route path='/produit' element={<Produits />} />
           <Route path='/products' element={<Produits />} />
           <Route path='/produits/:id' element={<ProductDetails addToCart={addToCart} />} />
+          <Route path='/produit/:id' element={<ProductDetails addToCart={addToCart} />} />
+          <Route path='/products/:id' element={<ProductDetails addToCart={addToCart} />} />
           <Route
             path='/cart'
             element={
