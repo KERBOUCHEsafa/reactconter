@@ -1,9 +1,21 @@
 import axios from 'axios';
 
-// Un seul endroit qui connaît l'adresse du serveur.
-// En local : http://localhost:5000. En ligne : la variable VITE_API_URL.
+const resolveApiBaseUrl = () => {
+  const configuredUrl = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+
+  if (configuredUrl) {
+    return configuredUrl;
+  }
+
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return 'http://localhost:5000';
+  }
+
+  return 'https://reactconter.onrender.com';
+};
+
 const api = axios.create({
-  baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api'
+  baseURL: `${resolveApiBaseUrl()}/api`
 });
 
 function getStoredToken() {
