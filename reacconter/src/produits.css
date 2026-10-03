@@ -4,33 +4,35 @@
   padding: 48px 20px 56px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 26px;
-  background: #f5f8fb;
+  gap: 28px;
+  background: linear-gradient(180deg, #f4f7fb 0%, #eef4f8 100%);
 }
 
 .product {
   width: 100%;
-  max-width: 280px;
+  max-width: 290px;
   justify-self: center;
   background: #ffffff;
-  border: 1px solid #dfeaf1;
-  border-radius: 18px;
+  border: 1px solid #edf1f5;
+  border-radius: 22px;
   overflow: hidden;
-  box-shadow: 0 10px 24px rgba(86, 125, 138, 0.08);
+  box-shadow: 0 14px 30px rgba(31, 60, 90, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .product:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 30px rgba(86, 125, 138, 0.12);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 32px rgba(31, 60, 90, 0.12);
 }
 
 .product-image {
   width: 100%;
-  height: 260px;
-  background: #edf4f8;
+  height: 270px;
+  background: linear-gradient(135deg, #eef4f8 0%, #f9fbfd 100%);
   overflow: hidden;
   border-bottom: 1px solid #edf2f6;
+  padding: 12px;
+  box-sizing: border-box;
 }
 
 .product img {
@@ -38,11 +40,13 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.25s ease;
+  border-radius: 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 10px 18px rgba(31, 60, 90, 0.08);
 }
 
 .product:hover img {
-  transform: scale(1.03);
+  transform: scale(1.04);
 }
 
 .product-info {
@@ -52,12 +56,14 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 8px;
 }
 
 .product h3 {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 1.08rem;
   color: #1f3c5a;
+  font-weight: 800;
 }
 
 .product p {
@@ -69,19 +75,21 @@
 
 .product a {
   display: inline-block;
-  margin-top: 14px;
-  padding: 9px 16px;
+  margin-top: 8px;
+  padding: 10px 18px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #c8d9e6, #b4d0df);
+  background: linear-gradient(135deg, #dbeaf6, #bfd8ea);
   color: #17364b;
   text-decoration: none;
   font-weight: 700;
   font-size: 0.9rem;
   transition: all 0.2s ease;
+  box-shadow: 0 8px 16px rgba(127, 164, 189, 0.2);
 }
 
 .product a:hover {
-  opacity: 0.9;
+  opacity: 0.96;
   transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(127, 164, 189, 0.28);
 }
 
