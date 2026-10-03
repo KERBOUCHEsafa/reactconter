@@ -4,6 +4,15 @@ import { protect, isAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
+const fallbackProduits = [
+  { id: 1, name: 'Rode', title: 'Rode microphone', description: 'Microphone professionnel de studio.', category: 'Audio', price: 5000, image: '/assets/pic1.jpeg', rating: 4.8, reviews: 128, stock: 15 },
+  { id: 2, name: 'Rode', title: 'Rode microphone', description: 'Microphone professionnel de studio.', category: 'Audio', price: 5000, image: '/assets/pic2.jpeg', rating: 4.8, reviews: 128, stock: 15 },
+  { id: 3, name: 'Rode', title: 'Rode microphone', description: 'Microphone professionnel de studio.', category: 'Audio', price: 5000, image: '/assets/pic3.jpeg', rating: 4.8, reviews: 128, stock: 15 },
+  { id: 4, name: 'Rode', title: 'Rode microphone', description: 'Microphone professionnel de studio.', category: 'Audio', price: 5000, image: '/assets/pic4.jpeg', rating: 4.8, reviews: 128, stock: 15 },
+  { id: 5, name: 'Rode', title: 'Rode microphone', description: 'Microphone professionnel de studio.', category: 'Audio', price: 5000, image: '/assets/pic5.jpeg', rating: 4.8, reviews: 128, stock: 15 },
+  { id: 6, name: 'Rode', title: 'Rode microphone', description: 'Microphone professionnel de studio.', category: 'Audio', price: 5000, image: '/assets/pic6.jpeg', rating: 4.8, reviews: 128, stock: 15 }
+];
+
 // Seuls ces champs peuvent être envoyés par le formulaire admin (rien d'autre).
 const CHAMPS = ['name', 'title', 'description', 'category', 'price', 'image', 'stock'];
 
@@ -27,7 +36,8 @@ router.get('/', async function (req, res) {
     const produits = await Produit.find().sort({ createdAt: -1 });
     res.json(produits);
   } catch (err) {
-    erreurProduit(err, res);
+    console.error('Produit fallback utilisé:', err.message);
+    res.json(fallbackProduits);
   }
 });
 
@@ -37,7 +47,16 @@ router.get('/:id', async function (req, res) {
     if (!produit) return res.status(404).json({ message: 'Produit non trouvé' });
     res.json(produit);
   } catch (err) {
-    erreurProduit(err, res);
+    const fallbackProduit = fallbackProduits.find(function (item) {
+      return String(item.id) === String(req.params.id) || String(item._id) === String(req.params.id);
+    });
+
+    if (fallbackProduit) {
+      return res.json(fallbackProduit);
+    }
+
+    console.error('Produit fallback introuvable:', err.message);
+    return res.status(404).json({ message: 'Produit non trouvé' });
   }
 });
 

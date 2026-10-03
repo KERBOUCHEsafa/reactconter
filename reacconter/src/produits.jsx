@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './produits.css';
 import { Link } from 'react-router-dom';
 import api from './api/axios';
+import { produits as fallbackProduits } from './produits-data';
 import pic1 from './pic.png/pic1.jpeg';
 import pic2 from './pic.png/pic2.jpeg';
 import pic3 from './pic.png/pic3.jpeg';
@@ -25,10 +26,11 @@ function Product() {
   useEffect(function () {
     api.get('/products')
       .then(function (response) {
-        setProduits(response.data);
+        const source = Array.isArray(response.data) && response.data.length > 0 ? response.data : fallbackProduits;
+        setProduits(source);
       })
       .catch(function () {
-        setProduits([]);
+        setProduits(fallbackProduits);
       });
   }, []);
 

@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import api from './api/axios';
+import { produits as fallbackProduits } from './produits-data';
 import './produits-cart.css';
 import pic1 from './pic.png/pic1.jpeg';
 import pic2 from './pic.png/pic2.jpeg';
@@ -30,10 +31,18 @@ function ProductDetails({ addToCart }) {
 
     api.get(`/products/${id}`)
       .then(function (response) {
-        if (!annule) setProduct(response.data);
+        if (!annule) {
+          const data = response.data && Object.keys(response.data).length > 0 ? response.data : fallbackProduits.find((item) => String(item.id) === String(id));
+          setProduct(data || null);
+          setNotFound(!data);
+        }
       })
       .catch(function () {
-        if (!annule) setNotFound(true);
+        if (!annule) {
+          const fallbackProduct = fallbackProduits.find((item) => String(item.id) === String(id));
+          setProduct(fallbackProduct || null);
+          setNotFound(!fallbackProduct);
+        }
       });
 
     return function () {
