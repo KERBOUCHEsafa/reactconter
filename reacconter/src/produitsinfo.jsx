@@ -9,14 +9,15 @@ import pic4 from './pic.png/pic4.jpeg';
 import pic5 from './pic.png/pic5.jpeg';
 import pic6 from './pic.png/pic6.jpeg';
 
-const productImages = {
-  1: pic1,
-  2: pic2,
-  3: pic3,
-  4: pic4,
-  5: pic5,
-  6: pic6,
-};
+const productImages = [pic1, pic2, pic3, pic4, pic5, pic6];
+
+function getProductImage(product, fallbackIndex = 0) {
+  const rawId = Number(product?.id ?? product?._id ?? fallbackIndex + 1);
+  const normalizedId = Number.isFinite(rawId) ? rawId : fallbackIndex + 1;
+  const imageIndex = ((normalizedId - 1) % productImages.length + productImages.length) % productImages.length;
+
+  return productImages[imageIndex] || product?.image || 'https://placehold.co/600x600/efe7f4/5a2a6d?text=Product';
+}
 
 function ProductDetails({ addToCart }) {
 
@@ -60,8 +61,7 @@ function ProductDetails({ addToCart }) {
     );
   }
 
-  const resolvedId = Number(product.id ?? product._id?.toString().slice(-1) ?? 1);
-  const imageSource = productImages[resolvedId] || product.image || 'https://placehold.co/600x600/efe7f4/5a2a6d?text=Product';
+  const imageSource = getProductImage(product, 0);
 
   return (
     <div className="product-details">
