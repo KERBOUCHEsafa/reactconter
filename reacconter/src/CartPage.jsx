@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom';
 import './produits-cart.css';
 
@@ -17,15 +16,15 @@ function CartItem({
         <p>${Number(item.price).toFixed(2)}</p>
 
         <div className='quantity'>
-          <button onClick={() => decreaseQuantity(item.id)} aria-label='Decrease quantity'>−</button>
+          <button onClick={() => decreaseQuantity(item._id)} aria-label='Decrease quantity'>−</button>
           <span>{item.quantity}</span>
-          <button onClick={() => increaseQuantity(item.id)} aria-label='Increase quantity'>+</button>
+          <button onClick={() => increaseQuantity(item._id)} aria-label='Increase quantity'>+</button>
         </div>
       </div>
 
       <div className='cart-item-right'>
         <strong>${(Number(item.price) * item.quantity).toFixed(2)}</strong>
-        <button className='remove-btn' onClick={() => removeFromCart(item.id)} aria-label='Remove item'>🗑️</button>
+        <button className='remove-btn' onClick={() => removeFromCart(item._id)} aria-label='Remove item'>🗑️</button>
       </div>
     </div>
   );
@@ -57,7 +56,7 @@ function CartPage({ items, increaseQuantity, decreaseQuantity, removeFromCart })
         <div className='cart-items'>
           {items.map((item) => (
             <CartItem
-              key={item.id}
+              key={item._id}
               item={item}
               increaseQuantity={increaseQuantity}
               decreaseQuantity={decreaseQuantity}

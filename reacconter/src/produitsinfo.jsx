@@ -1,16 +1,31 @@
 import { Link, useParams } from "react-router-dom";
-import { produits } from './produits-data.js';
+import { useState, useEffect } from 'react';
+import api from './api/axios';
 import './produits-cart.css';
 
 function ProductDetails({ addToCart }) {
 
   const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [notFound, setNotFound] = useState(false);
 
-  const product = produits.find(
-    item => item.id === Number(id)
-  );
+  useEffect(function () {
+    let annule = false;
 
-  if (!product) {
+    api.get(`/products/${id}`)
+      .then(function (response) {
+        if (!annule) setProduct(response.data);
+      })
+      .catch(function () {
+        if (!annule) setNotFound(true);
+      });
+
+    return function () {
+      annule = true;
+    };
+  }, [id]);
+
+  if (notFound) {
     return (
       <div className="not-found">
         <h2>Product not found</h2>
@@ -18,6 +33,14 @@ function ProductDetails({ addToCart }) {
         <Link to="/">
           Back to Products
         </Link>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="not-found">
+        <h2>Chargement...</h2>
       </div>
     );
   }

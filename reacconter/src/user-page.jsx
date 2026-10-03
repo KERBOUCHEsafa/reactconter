@@ -1,7 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import api, { setAuthToken } from './api/axios';
 import './produits-cart.css';
 
 function AuthPage() {
+  const navigate = useNavigate();
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
   const [isSignUp, setIsSignUp] = useState(false);
   const [signUpData, setSignUpData] = useState({
     email: '',
@@ -25,30 +31,71 @@ function AuthPage() {
     setSignInData({ ...signInData, [name]: value });
   };
 
-  const handleSignUpSubmit = (e) => {
+  const saveAuth = (userData) => {
+    setAuthToken(userData.token);
+    localStorage.setItem('token', userData.token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    navigate('/');
+  };
+
+  const handleSignUpSubmit = async (e) => {
     e.preventDefault();
-    if (!signUpData.email && !signUpData.phone) {
-      alert('Veuillez entrer un email ou un numéro de téléphone');
+
+    if (!signUpData.email) {
+      alert('Veuillez entrer un email');
       return;
     }
+
     if (!signUpData.password || !signUpData.name || !signUpData.surname) {
       alert('Veuillez remplir tous les champs');
       return;
     }
-    alert(
-      `Compte créé pour ${signUpData.name} ${signUpData.surname}\nEmail/Téléphone: ${signUpData.email || signUpData.phone}`
-    );
-    setSignUpData({ email: '', phone: '', password: '', name: '', surname: '' });
+
+    try {
+      const response = await api.post('/auth/register', {
+        nom: `${signUpData.name} ${signUpData.surname}`.trim(),
+        email: signUpData.email,
+        password: signUpData.password
+      });
+
+      saveAuth(response.data);
+      setSignUpData({ email: '', phone: '', password: '', name: '', surname: '' });
+    } catch (error) {
+      alert(error?.response?.data?.message || 'Erreur lors de la création du compte');
+    }
   };
 
-  const handleSignInSubmit = (e) => {
+  const handleSignInSubmit = async (e) => {
     e.preventDefault();
+
     if (!signInData.email || !signInData.password) {
       alert('Veuillez entrer votre email et mot de passe');
       return;
     }
-    alert(`Connecté avec: ${signInData.email}`);
-    setSignInData({ email: '', password: '' });
+
+    try {
+      const response = await api.post('/auth/login', {
+        email: signInData.email,
+        password: signInData.password
+      });
+
+      saveAuth(response.data);
+      setSignInData({ email: '', password: '' });
+    } catch (error) {
+      alert(error?.response?.data?.message || 'Erreur lors de la connexion');
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const response = await api.post('/auth/google', {
+        credential: credentialResponse.credential
+      });
+
+      saveAuth(response.data);
+    } catch (error) {
+      alert(error?.response?.data?.message || 'La connexion Google a échoué');
+    }
   };
 
   return (
@@ -67,6 +114,20 @@ function AuthPage() {
           >
             Inscription
           </button>
+        </div>
+
+        <div className='google-auth-box'>
+          {googleClientId ? (
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => alert('Google login failed')}
+              text='continue_with'
+              size='large'
+              shape='pill'
+            />
+          ) : (
+            <p className='google-auth-warning'>Ajoutez VITE_GOOGLE_CLIENT_ID dans votre fichier .env pour activer Google.</p>
+          )}
         </div>
 
         {!isSignUp ? (

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from './navbar.jsx';
 import './navbar.css';
 import './App.css';
@@ -14,16 +14,32 @@ import AuthPage from './user-page.jsx';
 import AdminPage from './AdminPage.jsx';
 import './produits.css';
 
+// Au démarrage, on relit le panier sauvegardé dans le navigateur :
+// un F5 ne doit plus vider le panier.
+function lirePanierDepuisStockage() {
+  try {
+    const sauvegarde = localStorage.getItem('panier');
+    return sauvegarde ? JSON.parse(sauvegarde) : [];
+  } catch {
+    return [];
+  }
+}
+
 function App() {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(lirePanierDepuisStockage);
+
+  // À chaque changement du panier, on le sauvegarde dans le navigateur.
+  useEffect(function () {
+    localStorage.setItem('panier', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (product) => {
     setCartItems((currentCart) => {
-      const existingItem = currentCart.find((item) => item.id === product.id);
+      const existingItem = currentCart.find((item) => item._id === product._id);
 
       if (existingItem) {
         return currentCart.map((item) =>
-          item.id === product.id
+          item._id === product._id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -36,7 +52,7 @@ function App() {
   const increaseQuantity = (productId) => {
     setCartItems((currentCart) =>
       currentCart.map((item) =>
-        item.id === productId ? { ...item, quantity: item.quantity + 1 } : item
+        item._id === productId ? { ...item, quantity: item.quantity + 1 } : item
       )
     );
   };
@@ -45,7 +61,7 @@ function App() {
     setCartItems((currentCart) =>
       currentCart
         .map((item) =>
-          item.id === productId ? { ...item, quantity: item.quantity - 1 } : item
+          item._id === productId ? { ...item, quantity: item.quantity - 1 } : item
         )
         .filter((item) => item.quantity > 0)
     );
@@ -53,8 +69,12 @@ function App() {
 
   const removeFromCart = (productId) => {
     setCartItems((currentCart) =>
-      currentCart.filter((item) => item.id !== productId)
+      currentCart.filter((item) => item._id !== productId)
     );
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
   };
 
   return (
@@ -89,7 +109,10 @@ function App() {
               />
             }
           />
-          <Route path='/checkout' element={<CheckoutPage />} />
+          <Route
+            path='/checkout'
+            element={<CheckoutPage cartItems={cartItems} clearCart={clearCart} />}
+          />
           <Route path='/connexion' element={<AuthPage />} />
           <Route path='/admin' element={<AdminPage />} />
         </Routes>
