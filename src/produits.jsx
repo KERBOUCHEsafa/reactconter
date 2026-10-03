@@ -1,6 +1,8 @@
-import React from 'react';
-import './produits.css';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import api from './api/axios';
+import './produits.css';
+
 import pic1 from './pic.png/pic1.jpeg';
 import pic2 from './pic.png/pic2.jpeg';
 import pic3 from './pic.png/pic3.jpeg';
@@ -8,92 +10,114 @@ import pic4 from './pic.png/pic4.jpeg';
 import pic5 from './pic.png/pic5.jpeg';
 import pic6 from './pic.png/pic6.jpeg';
 
-export const produits = [
-  {
-    id: 1,
-    name: 'Rode Mic',
-    category: 'Audio',
-    title: 'Wireless microphone for creators',
-    price: 19.99,
-    image: pic1,
-    rating: 4.8,
-    reviews: 128,
-    description: 'A compact microphone designed for clear voice capture and mobile recording.',
-    stock: 15,
-  },
-  {
-    id: 2,
-    name: 'Rode Mic Pro',
-    category: 'Audio',
-    title: 'Studio-grade microphone',
-    price: 29.99,
-    image: pic2,
-    rating: 4.7,
-    reviews: 96,
-    description: 'Designed for streaming, podcasts, and professional voice recording with crisp detail.',
-    stock: 12,
-  },
-  {
-    id: 3,
-    name: 'Rode Mic Air',
-    category: 'Audio',
-    title: 'Portable recording mic',
-    price: 24.99,
-    image: pic3,
-    rating: 4.6,
-    reviews: 82,
-    description: 'Travel-friendly design with rich sound and easy setup for any recording need.',
-    stock: 9,
-  },
-  {
-    id: 4,
-    name: 'Rode Mic Max',
-    category: 'Audio',
-    title: 'Premium creator microphone',
-    price: 39.99,
-    image: pic4,
-    rating: 4.9,
-    reviews: 143,
-    description: 'High-performance audio capture for creators who want crisp, balanced sound.',
-    stock: 7,
-  },
-  {
-    id: 5,
-    name: 'Rode Mic Mini',
-    category: 'Audio',
-    title: 'Compact on-the-go mic',
-    price: 21.99,
-    image: pic5,
-    rating: 4.5,
-    reviews: 64,
-    description: 'A portable solution for meetings, voice notes, and short-form video production.',
-    stock: 18,
-  },
-  {
-    id: 6,
-    name: 'Rode Mic Studio',
-    category: 'Audio',
-    title: 'Full-featured studio mic',
-    price: 49.99,
-    image: pic6,
-    rating: 5,
-    reviews: 205,
-    description: 'A premium microphone built for expressive vocals and professional recordings.',
-    stock: 5,
-  },
-];
+const productImages = [pic1, pic2, pic3, pic4, pic5, pic6];
+
+function getProductImage(product, index) {
+  if (typeof product?.image === 'string' && product.image.startsWith('http')) {
+    return product.image;
+  }
+
+  if (typeof product?.image === 'string' && product.image.startsWith('/')) {
+    const fileNumber = product.image.match(/(\d+)/)?.[1];
+    if (fileNumber) {
+      const imageIndex = Number(fileNumber) - 1;
+      return productImages[imageIndex] || productImages[index % productImages.length];
+    }
+  }
+
+  return productImages[index % productImages.length];
+}
 
 function Product() {
+  const [produits, setProduits] = useState([]);
+  const [recherche, setRecherche] = useState('');
+  const [categorie, setCategorie] = useState('');
+  const [tri, setTri] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [erreur, setErreur] = useState('');
+
+  useEffect(() => {
+    api
+      .get('/products')
+      .then((response) => setProduits(response.data))
+      .catch(() => {
+        setErreur('Serveur injoignable — le backend est-il lancé ?');
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const categories = [...new Set(produits.map((p) => p.category || 'Autres'))];
+
+  const resultats = produits
+    .filter((p) => (p.name || '').toLowerCase().includes(recherche.toLowerCase()))
+    .filter((p) => categorie === '' || (p.category || 'Autres') === categorie);
+
+  const resultatsTries = [...resultats].sort((a, b) => {
+    if (tri === 'prix-asc') return Number(a.price) - Number(b.price);
+    if (tri === 'prix-desc') return Number(b.price) - Number(a.price);
+    if (tri === 'nom') return (a.name || '').localeCompare(b.name || '');
+    return 0;
+  });
+
+  if (loading) {
+    return <div className='products'>Chargement des produits...</div>;
+  }
+
+  if (erreur) {
+    return <div className='products'>{erreur}</div>;
+  }
+
   return (
     <div className='products'>
-      {produits.map((p) => (
-        <div key={p.id} className='product'>
-          <img src={p.image} alt={p.name} />
-          <h3>{p.name}</h3>
-          <p>${p.price.toFixed(2)}</p>
-          <Link to={`/produits/${p.id}`}>View details</Link>
+      <h1>Nos produits</h1>
+
+      <div className='products-toolbar'>
+        <input
+          className='search-input'
+          placeholder='Rechercher un produit...'
+          value={recherche}
+          onChange={(e) => setRecherche(e.target.value)}
+        />
+
+        <select
+          className='filter-select'
+          value={categorie}
+          onChange={(e) => setCategorie(e.target.value)}
+        >
+          <option value=''>Toutes les catégories</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className='filter-select'
+          value={tri}
+          onChange={(e) => setTri(e.target.value)}
+        >
+          <option value=''>Trier par...</option>
+          <option value='prix-asc'>Prix croissant</option>
+          <option value='prix-desc'>Prix décroissant</option>
+          <option value='nom'>Nom A-Z</option>
+        </select>
+      </div>
+
+      {resultatsTries.length === 0 ? (
+        <p className='text-muted'>Aucun produit ne correspond.</p>
+      ) : (
+        <div className='products-grid'>
+          {resultatsTries.map((p, index) => (
+            <div key={p._id || p.id} className='product'>
+              <img src={getProductImage(p, index)} alt={p.name} />
+              <h3>{p.name}</h3>
+              <p>{Number(p.price).toLocaleString('fr-FR')} DA</p>
+              <Link to={`/produits/${p._id || p.id}`}>View details</Link>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }

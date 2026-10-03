@@ -78,7 +78,7 @@ function CartPage({ items, increaseQuantity, decreaseQuantity, removeFromCart })
           </div>
           <div className='summary-row total'>
             <span>Total</span>
-            <strong>${subtotal.toFixed(2)}</strong>
+            <strong><p>{subtotal.toLocaleString('fr-FR')} DA</p></strong>
           </div>
           <button className='checkout-btn' onClick={() => navigate('/checkout')}>Passer la commande</button>
         </aside>

@@ -407,6 +407,15 @@
   background: #f5f8fb;
 }
 
+.checkout-page {
+  min-height: 520px;
+}
+
+.checkout-page .order-card {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
 .order-card {
   background: #ffffff;
   border: 1px solid #dfeaf1;
@@ -509,6 +518,34 @@
   opacity: 0.96;
 }
 
+.checkout-confirmation {
+  text-align: center;
+  padding: 56px 32px;
+}
+
+.checkout-confirmation-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: #d8eee2;
+  color: #2d6a4f;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.checkout-confirmation h2 {
+  margin: 0;
+  color: #1f3c5a;
+}
+
+.checkout-confirmation p {
+  margin: 12px 0 0;
+  color: #567d8a;
+}
+
 .auth-page {
   max-width: 500px;
   margin: 0 auto;
@@ -593,6 +630,19 @@
   margin-top: 10px;
   color: #567d8a;
   font-size: 0.95rem;
+}
+
+.google-auth-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.google-auth-warning {
+  margin: 0;
+  color: #567d8a;
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 .auth-form {

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import Navbar from './navbar.jsx';
 import './navbar.css';
@@ -9,8 +9,9 @@ import Dashbored from './dashbored.jsx';
 import Produits from './produits.jsx';
 import ProductDetails from './produitsinfo.jsx';
 import CartPage from './CartPage.jsx';
-import OrderForm from './order-form.jsx';
+import CheckoutPage from './CheckoutPage.jsx';
 import AuthPage from './user-page.jsx';
+import AdminPage from './AdminPage.jsx';
 import './produits.css';
 
 function App() {
@@ -56,16 +57,13 @@ function App() {
     );
   };
 
-  const placeholderPage = (title, message) => (
-    <div className='not-found'>
-      <h2>{title}</h2>
-      <p>{message}</p>
-      <Link to='/produits'>Voir les produits</Link>
-    </div>
-  );
-
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <Navbar cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
 
       <main className='content'>
@@ -96,8 +94,9 @@ function App() {
               />
             }
           />
-          <Route path='/checkout' element={<OrderForm />} />
+          <Route path='/checkout' element={<CheckoutPage />} />
           <Route path='/connexion' element={<AuthPage />} />
+          <Route path='/admin' element={<AdminPage />} />
         </Routes>
       </main>
 

@@ -20,6 +20,9 @@ export default function Navbar({ cartCount = 0 }) {
           <Link to='/connexion' className='btn btn-primary'>
             Connexion
           </Link>
+          <Link to='/admin' className='btn btn-admin'>
+            Admin
+          </Link>
         </div>
       </nav>
     </header>

@@ -72,8 +72,11 @@ function OrderForm() {
             >
               <option value=''>Choisir la wilaya</option>
               <option value='Alger'>Alger</option>
-              <option value='Mila'>Mila</option>
+              <option value='skikda'>Skikda</option>
               <option value='Oran'>Oran</option>
+              <option value='Constantine'>Constantine</option>
+              <option value='Tlemcen'>Tlemcen</option>
+              
             </select>
           </label>
 
