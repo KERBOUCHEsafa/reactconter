@@ -1,0 +1,3202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DZShop complet — Safaa</title>
+<style>
+:root{--bg:#f6f7f9;--carte:#fff;--txt:#212529;--gris:#6c757d;--bleu:#0d6efd;--vert:#198754;--orange:#fd7e14;--rouge:#dc3545;--violet:#7048e8;--bordure:#dee2e6;--code:#1e1e2e;--codetxt:#e4e4e7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI",Roboto,sans-serif;line-height:1.65}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px 80px}
+header{background:linear-gradient(135deg,#198754,#0d6efd);color:#fff;padding:40px 16px;text-align:center}
+header .tag{display:inline-block;background:rgba(255,255,255,.2);border-radius:99px;padding:4px 14px;font-size:.82rem;margin-bottom:12px}
+header h1{font-size:1.8rem;margin-bottom:6px}
+h2{margin:44px 0 14px;padding-bottom:8px;border-bottom:3px solid var(--vert);font-size:1.3rem}
+h3{margin:22px 0 8px;font-size:1.05rem}
+p{margin-bottom:12px}
+ul,ol{margin:0 0 14px 22px}li{margin-bottom:6px}
+pre{background:var(--code);color:var(--codetxt);padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.85rem;line-height:1.55;margin:10px 0}
+code{font-family:"Cascadia Code",Consolas,monospace}
+p code,li code,td code{background:#e9ecef;color:#c7254e;padding:2px 6px;border-radius:4px;font-size:.88em}
+.fichier{background:#252a36;color:#a6e3a1;border-radius:6px 6px 0 0;padding:5px 14px;font-family:Consolas,monospace;font-size:.78rem;display:inline-block;margin-top:8px}
+.fichier+pre{border-radius:0 8px 8px 8px;margin-top:0}
+.box{border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0}
+.box b.t{display:block;margin-bottom:4px}
+.warn{border-left:4px solid var(--orange);background:#fff4e6}
+.err{border-left:4px solid var(--rouge);background:#fdeaec}
+.tip{border-left:4px solid var(--bleu);background:#e7f1ff}
+.ok{border-left:4px solid var(--vert);background:#e8f6ee}
+.neuf{border-left:4px solid var(--violet);background:#f1ecfd}
+details{background:var(--carte);border:1px solid var(--bordure);border-radius:8px;padding:10px 16px;margin:12px 0}
+summary{cursor:pointer;font-weight:600;color:var(--vert)}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--bordure);vertical-align:top}
+th{color:var(--vert);font-size:.8rem;text-transform:uppercase}
+.etape{display:inline-block;background:var(--vert);color:#fff;border-radius:99px;padding:1px 10px;font-size:.78rem;font-weight:700;margin-right:6px}
+@media(max-width:600px){header h1{font-size:1.4rem}}
+.fichier.terminal{background:#3b3f52;color:#f9e2af}
+.fichier.terminal+pre{border-radius:0 8px 8px 8px}
+pre{position:relative}
+.copier{position:absolute;top:8px;right:8px;background:#0d6efd;color:#fff;border:0;border-radius:6px;padding:5px 12px;font-size:.78rem;font-weight:600;cursor:pointer}
+.copier:hover{background:#0b5ed7}
+.copier.fait{background:#198754}
+pre.nocopy .copier{display:none}
+table{display:block;overflow-x:auto}
+p code,li code,td code{overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header>
+  <span class="tag">Élève : Safaa Kerbouche · Repo : KERBOUCHEsafa/reactconter (branche master) · Guide complet jusqu'à la mise en ligne · 03/10/2026</span>
+  <h1>🚀 DZShop au niveau du projet d'Amel</h1>
+  <p>Sécurité, vraies commandes, espace admin complet, puis mise en ligne. Tout est prêt à copier-coller et a été testé sur une copie de ton projet.</p>
+</header>
+<div class="wrap">
+
+<div class="box ok"><b class="t">💬 Salam Safaa !</b>
+<p>J'ai récupéré ton dernier envoi (« Fix prod API config and product image fallback », 03/10 à 15h45) et j'ai regardé <b>tout</b> ton projet. Bravo pour le travail déjà fait : catalogue qui vient de l'API, fiche produit, panier qui reste après F5, inscription, connexion et Google qui marchent, et ton API déjà en ligne sur Render. 👏</p>
+<p style="margin:0">Ce guide part de <b>ton</b> code, garde ton design et tes noms de fichiers, et ajoute ce qui manque pour arriver au niveau du projet d'Amel. Je l'ai rejoué en entier sur une copie de ton projet, puis testé : <b>63 tests de l'API</b> et <b>33 tests dans un vrai navigateur Chrome</b>, tous verts.</p></div>
+
+<div class="box tip"><b class="t">🔍 Ce que j'ai trouvé dans ton projet aujourd'hui</b>
+<table>
+<tr><th>Sujet</th><th>Aujourd'hui</th><th>Après ce guide</th></tr>
+<tr><td>Mot de passe MongoDB</td><td>🔴 Écrit en clair dans <code>reacconter/.env.example</code>, donc <b>public sur GitHub</b></td><td>✅ Changé, rangé seulement dans <code>backend/.env</code></td></tr>
+<tr><td>Ajouter / modifier / supprimer un produit</td><td>🔴 N'importe quel client connecté peut le faire</td><td>✅ Réservé à l'admin</td></tr>
+<tr><td>Secret JWT</td><td>🔴 Valeur de secours <code>dev-secret-change-me</code> : quelqu'un pourrait fabriquer un faux compte admin</td><td>✅ Secret aléatoire obligatoire</td></tr>
+<tr><td>Commandes</td><td>❌ Le bouton « Confirmer » appelle <code>/api/orders</code>, qui n'existe pas</td><td>✅ Prix calculé par le serveur, stock, statuts, annulation</td></tr>
+<tr><td>Espace admin</td><td>❌ Des chiffres inventés (fichier <code>produits-data.js</code>), visible par tout le monde</td><td>✅ Vrai tableau de bord + graphique, produits avec photos, commandes, comptes</td></tr>
+<tr><td>Connexion</td><td>⚠️ Le menu affiche toujours « Connexion », pas de déconnexion</td><td>✅ Ton nom dans le menu, Déconnexion, « Mes commandes »</td></tr>
+<tr><td>Photos des produits</td><td>⚠️ Toujours une des 6 images fixes : une photo ajoutée par l'admin ne s'afficherait jamais</td><td>✅ La vraie photo de chaque produit</td></tr>
+<tr><td>Prix dans le panier</td><td>⚠️ Affichés en <code>$</code></td><td>✅ En DA, livraison 500 DA (offerte dès 10 000 DA)</td></tr>
+<tr><td>Site en ligne</td><td>⚠️ Ancienne version déposée à la main, qui appelle <code>localhost:5000</code></td><td>✅ Relié à GitHub : chaque <code>git push</code> le met à jour</td></tr>
+</table></div>
+
+<h2>Comment utiliser ce guide</h2>
+<ul>
+<li><b>Règle d'or : tu copies, tu colles, tu n'inventes rien.</b> Chaque bloc noir a un bouton <b>📋 Copier</b> en haut à droite.</li>
+<li>Bloc <b>« Terminal »</b> (titre jaune) : des commandes. Terminal de VS Code (<b>Terminal → New Terminal</b>), <code>Ctrl + V</code>, <b>Entrée</b>.</li>
+<li>Bloc <b>« fichier »</b> (titre vert) : le fichier <b>complet</b>. S'il existe : ouvre-le (<code>Ctrl + P</code>, tape son nom, <b>Entrée</b>), <code>Ctrl + A</code>, <code>Ctrl + V</code>, <code>Ctrl + S</code>. S'il n'existe pas : clic droit sur le dossier indiqué → <b>New File</b> → tape le nom exact → colle → <code>Ctrl + S</code>.</li>
+<li>Le terminal doit être <b>à la racine du projet</b> : le dossier qui contient <code>backend</code> et <code>reacconter</code>. Chaque <code>cd</code> du guide revient ensuite à la racine avec <code>cd ..</code>.</li>
+<li>Fais les étapes <b>dans l'ordre</b> : certains fichiers ont besoin de ceux d'avant.</li>
+<li>Garde un <b>bloc-notes</b> Windows ouvert pour noter mots de passe et adresses. <b>Jamais dans le projet.</b></li>
+</ul>
+
+<h2>Le plan</h2>
+<table>
+<tr><th>#</th><th>Étape</th><th>Durée</th></tr>
+<tr><td>0</td><td>Partir de la bonne version</td><td>2 min</td></tr>
+<tr><td>1</td><td>🔐 Sécurité : nouveau mot de passe MongoDB, secret JWT, fichiers <code>.env</code></td><td>15 min</td></tr>
+<tr><td>2</td><td>L'API : sécurité, commandes, photos, admin</td><td>30 min</td></tr>
+<tr><td>3</td><td>Le site : connexion partagée, vraies photos, commande, « Mes commandes »</td><td>30 min</td></tr>
+<tr><td>4</td><td>Le site : l'espace admin complet</td><td>20 min</td></tr>
+<tr><td>5</td><td>Devenir admin et tout tester sur ton PC</td><td>20 min</td></tr>
+<tr><td>6</td><td>Envoyer sur GitHub</td><td>5 min</td></tr>
+<tr><td>7</td><td>📸 Cloudinary (les photos en ligne)</td><td>10 min</td></tr>
+<tr><td>8</td><td>🚀 Mise en ligne : Atlas, Render, Netlify, Google</td><td>30 min</td></tr>
+<tr><td>9</td><td>Le grand test en ligne</td><td>10 min</td></tr>
+<tr><td>10</td><td>Si quelque chose ne marche pas</td><td>—</td></tr>
+</table>
+
+<!-- ============ 0 ============ -->
+<h2><span class="etape">0</span>Partir de la bonne version</h2>
+<p>Tu travailles sur la branche <code>master</code>. Vérifions que ton dossier est exactement ce qui est sur GitHub :</p>
+<div class="fichier terminal">Terminal</div>
+<pre>git checkout master
+git pull origin master
+git status</pre>
+<p><code>git status</code> doit dire <code>On branch master</code> et <code>nothing to commit, working tree clean</code>.</p>
+<div class="box warn"><b class="t">⚠️ Si <code>git status</code> montre des fichiers modifiés</b>
+Tu as changé des choses depuis ton dernier envoi. Envoie-les d'abord (<code>git add .</code>, <code>git commit -m "Mes changements"</code>, <code>git push origin master</code>) <b>ou</b> préviens-moi avant de continuer : ce guide remplace beaucoup de fichiers.</div>
+
+<!-- ============ 1 ============ -->
+<h2><span class="etape">1</span>🔐 Sécurité d'abord</h2>
+
+<h3>1.1 — Changer le mot de passe MongoDB (obligatoire)</h3>
+<div class="box err"><b class="t">🚨 Pourquoi c'est urgent</b>
+Ton fichier <code>reacconter/.env.example</code> contient ton adresse MongoDB <b>avec le mot de passe</b>, et il est sur GitHub, donc lisible par n'importe qui. Avec ça, quelqu'un peut lire, modifier ou effacer toute ta base. Supprimer la ligne ne suffit pas : l'ancien fichier reste dans l'historique de GitHub. La seule solution est de <b>changer le mot de passe</b> : l'ancien ne servira plus à rien.</div>
+<ol>
+<li>Va sur <b>cloud.mongodb.com</b> → ton projet → menu de gauche <b>Database Access</b> (ou <i>Security → Database Access</i>).</li>
+<li>Sur la ligne de ton utilisateur (<code>skerbouche071_db_user</code>) : <b>Edit</b> → <b>Edit Password</b> → <b>Autogenerate Secure Password</b> → <b>Copy</b>. Colle-le dans ton bloc-notes.</li>
+<li><b>Update User</b>. Attends 1 minute.</li>
+</ol>
+
+<h3>1.2 — Fabriquer un vrai secret JWT</h3>
+<div class="box tip"><b class="t">💡 C'est quoi, le secret JWT ?</b>
+Quand tu te connectes, l'API te donne un « bracelet de festival » (le <b>jeton</b>, ou token) qui prouve qui tu es. Ce bracelet est signé avec <code>JWT_SECRET</code>. Si quelqu'un connaît le secret, il peut fabriquer un faux bracelet « admin ». Le tien vaut aujourd'hui <code>dev-secret-change-me</code> : c'est comme fermer sa maison avec la clé posée sur la porte.</div>
+<div class="fichier terminal">Terminal</div>
+<pre>node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"</pre>
+<p>Ça affiche une longue suite de lettres et de chiffres (96 caractères). Copie-la dans ton bloc-notes.</p>
+
+<h3>1.3 — Le fichier secret de l'API : <code>backend/.env</code></h3>
+<p>Ouvre <code>backend/.env</code> (s'il n'existe pas : clic droit sur <code>backend</code> → New File → <code>.env</code>). Il doit contenir <b>exactement ces lignes, avec tes vraies valeurs</b>. Ne copie pas ce bloc tel quel : remplace chaque valeur.</p>
+<pre class="nocopy">MONGO_URI=mongodb+srv://skerbouche071_db_user:NOUVEAU_MOT_DE_PASSE@cluster0.cyeo96g.mongodb.net/dzshop?retryWrites=true&amp;w=majority
+JWT_SECRET=la-longue-suite-de-l-etape-1.2
+GOOGLE_CLIENT_ID=ton-identifiant.apps.googleusercontent.com
+CLOUDINARY_URL=
+FRONTEND_URL=</pre>
+<ul>
+<li><code>MONGO_URI</code> : ton adresse Atlas actuelle, avec le <b>nouveau</b> mot de passe entre <code>:</code> et <code>@</code>. Le <code>/dzshop</code> après <code>.mongodb.net</code> donne un nom à ta base. Si ton adresse actuelle n'a <b>rien</b> entre <code>.net/</code> et <code>?</code>, garde-la comme elle est : tes produits sont dans la base par défaut, et en changeant le nom tu ne les verrais plus.</li>
+<li><code>GOOGLE_CLIENT_ID</code> : le même qu'aujourd'hui.</li>
+<li><code>CLOUDINARY_URL</code> et <code>FRONTEND_URL</code> : <b>vides</b> pour l'instant (étapes 7 et 8).</li>
+<li>Supprime la ligne <code>PORT=5000</code> si tu l'as : l'API prend 5000 toute seule sur ton PC.</li>
+</ul>
+<div class="box warn"><b class="t">⚠️ Si ton nouveau mot de passe contient <code>@</code>, <code>:</code>, <code>/</code>, <code>?</code>, <code>#</code> ou <code>%</code></b>
+Ces caractères cassent l'adresse MongoDB. Reclique sur <b>Autogenerate</b> jusqu'à avoir seulement des lettres et des chiffres.</div>
+
+<h3>1.4 — Les deux fichiers modèles (ceux qui vont sur GitHub)</h3>
+<p>Un fichier <code>.env.example</code> sert de <b>modèle</b> : il montre quelles lignes mettre, avec des valeurs bidon. Il part sur GitHub, donc <b>jamais de vraie valeur dedans</b>. Le modèle de l'API (nouveau fichier : clic droit sur <code>backend</code> → New File → <code>.env.example</code>) :</p>
+<div class="fichier">backend/.env.example</div>
+<pre># MODÈLE seulement. Copie ce fichier en "backend/.env" et mets-y tes VRAIES valeurs.
+# Ce fichier part sur GitHub : il ne doit JAMAIS contenir de vrai mot de passe.
+
+MONGO_URI=mongodb+srv://UTILISATEUR:MOT_DE_PASSE@cluster0.xxxxx.mongodb.net/dzshop?retryWrites=true&amp;w=majority
+JWT_SECRET=une_longue_suite_au_hasard_voir_le_guide
+GOOGLE_CLIENT_ID=ton-identifiant.apps.googleusercontent.com
+
+# Photos des produits : cloudinary://API_KEY:API_SECRET@NOM_DU_CLOUD
+CLOUDINARY_URL=
+
+# En ligne seulement : l'adresse de ton site Netlify (sans "/" à la fin)
+FRONTEND_URL=</pre>
+<p>Le modèle du site : <b>ouvre</b> <code>reacconter/.env.example</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>. Ça efface tes vrais secrets de ce fichier :</p>
+<div class="fichier">reacconter/.env.example</div>
+<pre># MODÈLE pour le SITE seulement. Copie ce fichier en "reacconter/.env".
+# Seules les variables qui commencent par VITE_ sont lues par le site.
+# (Les variables de l'API - MongoDB, JWT... - vont dans backend/.env, jamais ici.)
+
+VITE_API_URL=http://localhost:5000
+VITE_GOOGLE_CLIENT_ID=ton-identifiant.apps.googleusercontent.com</pre>
+<div class="box tip"><b class="t">💡 Pourquoi deux fichiers <code>.env</code> différents ?</b>
+L'API (dossier <code>backend</code>) et le site (dossier <code>reacconter</code>) sont <b>deux programmes séparés</b>. L'API garde les secrets (MongoDB, JWT). Le site, lui, est envoyé dans le navigateur de chaque visiteur : il ne doit contenir <b>aucun secret</b>, seulement des variables qui commencent par <code>VITE_</code>.</div>
+<p>Enfin, le fichier <code>reacconter/.env</code> (le vrai, pour ton PC ; crée-le s'il n'existe pas) :</p>
+<pre class="nocopy">VITE_API_URL=http://localhost:5000
+VITE_GOOGLE_CLIENT_ID=ton-identifiant.apps.googleusercontent.com</pre>
+
+<!-- ============ 2 ============ -->
+<h2><span class="etape">2</span>L'API : sécurité, commandes, photos, admin</h2>
+<p>Tout se passe dans le dossier <code>backend</code>. On ajoute d'abord les paquets dont on a besoin, puis on remplace ou crée les fichiers <b>dans l'ordre</b>. <code>server.js</code> vient en dernier, parce qu'il utilise tous les autres.</p>
+
+<h3>2.1 — Les paquets</h3>
+<p><b>Ouvre</b> <code>backend/package.json</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>. On ajoute <code>cloudinary</code> (photos en ligne), <code>multer</code> (recevoir une photo) et un script <code>start</code> (celui que lance Render) :</p>
+<div class="fichier">backend/package.json</div>
+<pre>{
+  "type": "module",
+  "engines": {
+    "node": "&gt;=20.19"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node seed.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.11.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "google-auth-library": "^11.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.10.0",
+    "multer": "^2.4.0"
+  }
+}</pre>
+<div class="fichier terminal">Terminal</div>
+<pre>cd backend
+npm install
+cd ..</pre>
+<p>Ça doit finir par <code>added ... packages</code>, sans <code>ERR!</code> en rouge.</p>
+<p>Et pour que les photos de test ne partent pas sur GitHub, <b>ouvre</b> <code>backend/.gitignore</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code> :</p>
+<div class="fichier">backend/.gitignore</div>
+<pre>.env
+.env.*
+!.env.example
+node_modules/
+uploads/</pre>
+
+<h3>2.2 — Les comptes : un rôle bien contrôlé</h3>
+<p>Seulement deux rôles possibles, <code>client</code> et <code>admin</code>. <b>Ouvre</b> <code>backend/model/user.js</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code> :</p>
+<div class="fichier">backend/model/user.js</div>
+<pre>import mongoose from 'mongoose'
+import bcrypt from 'bcryptjs'
+
+const schema = new mongoose.Schema({
+  nom:      { type: String, required: true },
+  // L'email est mis en minuscules À L'INSCRIPTION (routes/auth.js).
+  // Pas d'option "lowercase" ici : elle empêcherait de retrouver les anciens comptes
+  // créés avec des majuscules (Mongoose l'appliquerait aussi aux recherches).
+  email:    { type: String, required: true, unique: true, trim: true },
+  password: { type: String, required: true },
+  // Seulement deux rôles possibles : n'importe quelle autre valeur est refusée.
+  role:     { type: String, enum: ['client', 'admin'], default: 'client' }
+}, {
+  timestamps: true
+})
+
+// AVANT chaque sauvegarde : on brouille le mot de passe.
+// Fonction async SANS "next" (Mongoose moderne, sinon "next is not a function").
+schema.pre('save', async function() {
+  if (!this.isModified('password')) return
+  this.password = await bcrypt.hash(this.password, 10)
+})
+
+export default mongoose.model('User', schema)</pre>
+
+<h3>2.3 — Les deux vigiles : <code>protect</code> et <code>isAdmin</code></h3>
+<div class="box tip"><b class="t">💡 C'est quoi, un middleware ?</b>
+Un <b>vigile</b> placé devant une route. <code>protect</code> vérifie le bracelet (es-tu connectée ? sinon <b>401</b>). <code>isAdmin</code> vérifie le badge (es-tu admin ? sinon <b>403</b>). Une route protégée s'écrit <code>router.post('/', protect, isAdmin, ...)</code> : on passe les vigiles dans l'ordre.</div>
+<p><b>Ouvre</b> <code>backend/middleware/auth.js</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code> :</p>
+<div class="fichier">backend/middleware/auth.js</div>
+<pre>import jwt from 'jsonwebtoken'
+import User from '../model/user.js'
+
+// protect = "es-tu connectée ?"  (401 si non)
+// On relit le compte dans la base à chaque fois : si l'admin change ton rôle,
+// ou si le compte est supprimé, c'est pris en compte tout de suite.
+export async function protect(req, res, next) {
+  const header = req.headers.authorization || ''
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null
+  if (!token) return res.status(401).json({ message: 'Connecte-toi d\'abord' })
+
+  try {
+    const contenu = jwt.verify(token, process.env.JWT_SECRET)
+    const user = await User.findById(contenu.id).select('-password')
+    if (!user) return res.status(401).json({ message: 'Compte introuvable' })
+    req.user = user
+    next()
+  } catch (err) {
+    res.status(401).json({ message: 'Session expirée, reconnecte-toi' })
+  }
+}
+
+// isAdmin = "as-tu le droit ?"  (403 si non). Toujours APRÈS protect.
+export function isAdmin(req, res, next) {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Réservé à l\'administrateur' })
+  }
+  next()
+}</pre>
+<p>Nouveauté importante : <code>protect</code> relit le compte dans la base à chaque fois. Si tu retires le rôle admin à quelqu'un, ça compte <b>tout de suite</b>, même s'il garde son ancien bracelet.</p>
+
+<h3>2.4 — Inscription et connexion</h3>
+<p><b>Ouvre</b> <code>backend/routes/auth.js</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>. Changements : plus de secret de secours, mot de passe de 6 caractères minimum, le rôle envoyé par le navigateur est ignoré, les emails sont rangés en minuscules (tes anciens comptes avec majuscules marchent toujours), et une nouvelle route <code>/me</code> (« qui suis-je ? ») :</p>
+<div class="fichier">backend/routes/auth.js</div>
+<pre>import express from 'express';
+import crypto from 'node:crypto';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
+import User from '../model/user.js';
+import { protect } from '../middleware/auth.js';
+
+const router = express.Router();
+const googleClient = new OAuth2Client();
+
+// Le "bracelet de connexion" (JWT) : il contient l'identifiant du compte, signé
+// avec JWT_SECRET. Plus de valeur de secours : sans JWT_SECRET, server.js refuse de démarrer.
+function creerToken(user) {
+  return jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+}
+
+// Les comptes créés AVANT ce guide ont pu garder des majuscules dans l'email
+// ("Lina@Gmail.com") : on cherche l'email tel quel ET en minuscules.
+function chercherParEmail(emailSaisi) {
+  const tel = (emailSaisi || '').trim();
+  return User.findOne({ email: { $in: [tel, tel.toLowerCase()] } });
+}
+
+// Ce que le site reçoit après une connexion (jamais le mot de passe).
+function reponseConnexion(user) {
+  return { id: user._id, nom: user.nom, email: user.email, role: user.role, token: creerToken(user) };
+}
+
+router.post('/register', async function (req, res) {
+  try {
+    const nom = (req.body.nom || `${req.body.name || ''} ${req.body.surname || ''}`).trim();
+    const email = (req.body.email || '').trim().toLowerCase();
+    const password = req.body.password || '';
+
+    if (!nom || !email || !password) {
+      return res.status(400).json({ message: 'Nom, email et mot de passe requis' });
+    }
+    if (password.length &lt; 6) {
+      return res.status(400).json({ message: 'Le mot de passe doit faire au moins 6 caractères' });
+    }
+    if (await chercherParEmail(req.body.email)) {
+      return res.status(400).json({ message: 'Email déjà utilisé' });
+    }
+
+    // On ne lit JAMAIS le rôle envoyé par le navigateur : tout nouveau compte est "client".
+    const user = await User.create({ nom, email, password, role: 'client' });
+    res.status(201).json(reponseConnexion(user));
+  } catch (err) {
+    res.status(400).json({ message: 'Inscription impossible : ' + err.message });
+  }
+});
+
+router.post('/login', async function (req, res) {
+  const user = await chercherParEmail(req.body.email);
+
+  if (!user || !(await bcrypt.compare(req.body.password || '', user.password))) {
+    return res.status(401).json({ message: 'Identifiants incorrects' });
+  }
+
+  res.json(reponseConnexion(user));
+});
+
+router.post('/google', async function (req, res) {
+  const { credential } = req.body;
+
+  if (!credential) {
+    return res.status(400).json({ message: 'Google credential manquant' });
+  }
+  if (!process.env.GOOGLE_CLIENT_ID) {
+    return res.status(500).json({ message: 'Google client ID non configuré' });
+  }
+
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+
+    const payload = ticket.getPayload();
+    if (!payload || !payload.email || !payload.email_verified) {
+      return res.status(401).json({ message: 'Google token invalide' });
+    }
+
+    const email = payload.email.toLowerCase();
+    let user = await chercherParEmail(payload.email);
+
+    if (!user) {
+      user = await User.create({
+        nom: payload.name || payload.given_name || 'Client Google',
+        email,
+        password: crypto.randomBytes(24).toString('hex'),
+        role: 'client'
+      });
+    }
+
+    res.json(reponseConnexion(user));
+  } catch (err) {
+    res.status(401).json({ message: 'Connexion Google refusée' });
+  }
+});
+
+// "Qui suis-je ?" : le site s'en sert pour vérifier que la connexion est toujours valable.
+router.get('/me', protect, function (req, res) {
+  res.json({ id: req.user._id, nom: req.user.nom, email: req.user.email, role: req.user.role });
+});
+
+export default router;</pre>
+
+<h3>2.5 — Les produits : réservés à l'admin</h3>
+<p><b>Ouvre</b> <code>backend/models/produits.js</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code> (on ajoute description et catégorie, et le stock ne peut plus être négatif) :</p>
+<div class="fichier">backend/models/produits.js</div>
+<pre>import mongoose from 'mongoose';
+
+const schema = new mongoose.Schema({
+  name:        { type: String, required: true, trim: true },
+  title:       { type: String, default: '' },
+  description: { type: String, default: '' },
+  category:    { type: String, default: '' },
+  price:       { type: Number, required: true, min: 0 },
+  image:       { type: String, default: '' },
+  rating:      { type: Number, default: 0 },
+  reviews:     { type: Number, default: 0 },
+  stock:       { type: Number, default: 0, min: 0 }
+}, {
+  timestamps: true
+});
+
+export default mongoose.model('Produit', schema);</pre>
+<p><b>Ouvre</b> <code>backend/routes/produits.js</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>. Lire le catalogue reste ouvert à tous ; ajouter, modifier et supprimer passent maintenant par <code>protect, isAdmin</code>, et seuls les champs prévus sont acceptés :</p>
+<div class="fichier">backend/routes/produits.js</div>
+<pre>import express from 'express';
+import Produit from '../models/produits.js';
+import { protect, isAdmin } from '../middleware/auth.js';
+
+const router = express.Router();
+
+// Seuls ces champs peuvent être envoyés par le formulaire admin (rien d'autre).
+const CHAMPS = ['name', 'title', 'description', 'category', 'price', 'image', 'stock'];
+
+function garderChamps(body) {
+  const donnees = {};
+  for (const champ of CHAMPS) {
+    if (body[champ] !== undefined) donnees[champ] = body[champ];
+  }
+  return donnees;
+}
+
+function erreurProduit(err, res) {
+  if (err.name === 'ValidationError') return res.status(400).json({ message: err.message });
+  if (err.name === 'CastError') return res.status(400).json({ message: 'Identifiant de produit invalide' });
+  res.status(500).json({ message: err.message });
+}
+
+// Lire le catalogue : ouvert à tous
+router.get('/', async function (req, res) {
+  try {
+    const produits = await Produit.find().sort({ createdAt: -1 });
+    res.json(produits);
+  } catch (err) {
+    erreurProduit(err, res);
+  }
+});
+
+router.get('/:id', async function (req, res) {
+  try {
+    const produit = await Produit.findById(req.params.id);
+    if (!produit) return res.status(404).json({ message: 'Produit non trouvé' });
+    res.json(produit);
+  } catch (err) {
+    erreurProduit(err, res);
+  }
+});
+
+// Ajouter / modifier / supprimer : réservé à l'admin (protect PUIS isAdmin)
+router.post('/', protect, isAdmin, async function (req, res) {
+  try {
+    const produit = await Produit.create(garderChamps(req.body));
+    res.status(201).json(produit);
+  } catch (err) {
+    erreurProduit(err, res);
+  }
+});
+
+router.put('/:id', protect, isAdmin, async function (req, res) {
+  try {
+    const produit = await Produit.findByIdAndUpdate(
+      req.params.id,
+      garderChamps(req.body),
+      { new: true, runValidators: true }
+    );
+    if (!produit) return res.status(404).json({ message: 'Produit non trouvé' });
+    res.json(produit);
+  } catch (err) {
+    erreurProduit(err, res);
+  }
+});
+
+router.delete('/:id', protect, isAdmin, async function (req, res) {
+  try {
+    const produit = await Produit.findByIdAndDelete(req.params.id);
+    if (!produit) return res.status(404).json({ message: 'Produit non trouvé' });
+    res.json({ message: 'Produit supprimé', produit });
+  } catch (err) {
+    erreurProduit(err, res);
+  }
+});
+
+export default router;</pre>
+
+<h3>2.6 — Les commandes (le gros morceau)</h3>
+<p><b>Crée</b> <code>backend/models/order.js</code> (clic droit sur <code>backend/models</code> → New File → <code>order.js</code>) :</p>
+<div class="fichier">backend/models/order.js</div>
+<pre>import mongoose from 'mongoose';
+
+// Une ligne de commande garde une COPIE du nom et du prix au moment de l'achat :
+// si l'admin change le prix plus tard, les anciennes commandes ne bougent pas.
+const ligneSchema = new mongoose.Schema({
+  product:  { type: mongoose.Schema.Types.ObjectId, ref: 'Produit', required: true },
+  name:     { type: String, required: true },
+  image:    { type: String, default: '' },
+  price:    { type: Number, required: true, min: 0 },
+  quantity: { type: Number, required: true, min: 1 }
+}, { _id: false });
+
+const schema = new mongoose.Schema({
+  user:      { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  items:     { type: [ligneSchema], required: true },
+  sousTotal: { type: Number, required: true, min: 0 },
+  livraison: { type: Number, required: true, min: 0 },
+  total:     { type: Number, required: true, min: 0 },
+  nom:       { type: String, required: true, trim: true },
+  prenom:    { type: String, required: true, trim: true },
+  telephone: { type: String, required: true, trim: true },
+  wilaya:    { type: String, required: true, trim: true },
+  adresse:   { type: String, required: true, trim: true },
+  statut:    { type: String, enum: ['En attente', 'Expédiée', 'Livrée', 'Annulée'], default: 'En attente' }
+}, {
+  timestamps: true
+});
+
+export default mongoose.model('Order', schema);</pre>
+<div class="box tip"><b class="t">💡 La règle d'or des commandes : ne jamais croire le navigateur</b>
+Avec F12, n'importe qui peut modifier ce que son navigateur envoie, par exemple dire qu'un micro coûte 1 DA. Le site envoie donc <b>seulement</b> « quel produit, combien ». L'API va chercher elle-même le <b>vrai prix</b> et le <b>vrai stock</b> dans la base, calcule la livraison et le total. Comme un vendeur qui lit l'étiquette, pas le prix annoncé par le client.</div>
+<p><b>Crée</b> <code>backend/routes/orders.js</code> (clic droit sur <code>backend/routes</code> → New File → <code>orders.js</code>) :</p>
+<div class="fichier">backend/routes/orders.js</div>
+<pre>import express from 'express';
+import mongoose from 'mongoose';
+import Order from '../models/order.js';
+import Produit from '../models/produits.js';
+import { protect, isAdmin } from '../middleware/auth.js';
+
+const router = express.Router();
+
+// Les mêmes règles que la page d'accueil : livraison gratuite dès 10 000 DA.
+const LIVRAISON_GRATUITE_DES = 10000;
+const FRAIS_LIVRAISON = 500;
+const STATUTS = ['En attente', 'Expédiée', 'Livrée', 'Annulée'];
+
+// PASSER UNE COMMANDE  →  POST /api/orders   (il faut être connectée)
+router.post('/', protect, async function (req, res) {
+  const { items } = req.body;
+  const nom = (req.body.nom || '').trim();
+  const prenom = (req.body.prenom || '').trim();
+  const telephone = (req.body.telephone || '').replace(/\s/g, '');
+  const wilaya = (req.body.wilaya || '').trim();
+  const adresse = (req.body.adresse || '').trim();
+
+  if (!Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ message: 'Le panier est vide' });
+  }
+  if (!nom || !prenom || !wilaya || !adresse) {
+    return res.status(400).json({ message: 'Nom, prénom, wilaya et adresse sont obligatoires' });
+  }
+  if (!/^0[567]\d{8}$/.test(telephone)) {
+    return res.status(400).json({ message: 'Numéro de téléphone invalide (ex : 0550123456)' });
+  }
+
+  // Le navigateur envoie SEULEMENT { id, quantity } pour chaque article.
+  // On ne croit JAMAIS un prix venu du navigateur (il se modifie avec F12) :
+  // on va chercher le vrai prix et le vrai stock dans la base.
+  for (const item of items) {
+    const quantity = Number(item.quantity);
+    if (!mongoose.isValidObjectId(item.id)) {
+      return res.status(400).json({ message: 'Produit invalide' });
+    }
+    if (!Number.isInteger(quantity) || quantity &lt; 1 || quantity &gt; 99) {
+      return res.status(400).json({ message: 'Quantité invalide' });
+    }
+  }
+
+  const produits = await Produit.find({ _id: { $in: items.map(function (item) { return item.id; }) } });
+
+  const lignes = [];
+  for (const item of items) {
+    const produit = produits.find(function (p) { return String(p._id) === String(item.id); });
+    if (!produit) {
+      return res.status(400).json({ message: 'Un produit de ton panier n\'existe plus' });
+    }
+    lignes.push({
+      product: produit._id,
+      name: produit.name,
+      image: produit.image,
+      price: produit.price,
+      quantity: Number(item.quantity)
+    });
+  }
+
+  // On retire le stock produit par produit, SEULEMENT s'il en reste assez.
+  // Si un produit manque, on remet le stock déjà retiré et on refuse la commande.
+  const dejaRetires = [];
+  for (const ligne of lignes) {
+    const retrait = await Produit.updateOne(
+      { _id: ligne.product, stock: { $gte: ligne.quantity } },
+      { $inc: { stock: -ligne.quantity } }
+    );
+    if (retrait.modifiedCount !== 1) {
+      for (const deja of dejaRetires) {
+        await Produit.updateOne({ _id: deja.product }, { $inc: { stock: deja.quantity } });
+      }
+      return res.status(400).json({ message: 'Stock insuffisant pour ' + ligne.name });
+    }
+    dejaRetires.push(ligne);
+  }
+
+  const sousTotal = lignes.reduce(function (somme, ligne) { return somme + ligne.price * ligne.quantity; }, 0);
+  const livraison = sousTotal &gt;= LIVRAISON_GRATUITE_DES ? 0 : FRAIS_LIVRAISON;
+
+  const commande = await Order.create({
+    user: req.user._id,
+    items: lignes,
+    sousTotal,
+    livraison,
+    total: sousTotal + livraison,
+    nom,
+    prenom,
+    telephone,
+    wilaya,
+    adresse
+  });
+
+  res.status(201).json(commande);
+});
+
+// MES COMMANDES  →  GET /api/orders/mine
+router.get('/mine', protect, async function (req, res) {
+  const commandes = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+  res.json(commandes);
+});
+
+// TOUTES LES COMMANDES (admin)  →  GET /api/orders
+router.get('/', protect, isAdmin, async function (req, res) {
+  const commandes = await Order.find().populate('user', 'nom email').sort({ createdAt: -1 });
+  res.json(commandes);
+});
+
+// CHANGER LE STATUT (admin)  →  PATCH /api/orders/:id/statut
+router.patch('/:id/statut', protect, isAdmin, async function (req, res) {
+  const { statut } = req.body;
+  if (!STATUTS.includes(statut)) {
+    return res.status(400).json({ message: 'Statut invalide' });
+  }
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(404).json({ message: 'Commande introuvable' });
+  }
+
+  const commande = await Order.findById(req.params.id);
+  if (!commande) return res.status(404).json({ message: 'Commande introuvable' });
+
+  // Une commande annulée est verrouillée : sinon, recliquer sur "Annulée"
+  // redonnerait le stock une deuxième fois.
+  if (commande.statut === 'Annulée') {
+    return res.status(400).json({ message: 'Cette commande est annulée, elle ne peut plus changer' });
+  }
+
+  // Annulation : les articles reviennent dans le stock.
+  if (statut === 'Annulée') {
+    for (const ligne of commande.items) {
+      await Produit.updateOne({ _id: ligne.product }, { $inc: { stock: ligne.quantity } });
+    }
+  }
+
+  commande.statut = statut;
+  await commande.save();
+  res.json(commande);
+});
+
+export default router;</pre>
+<p>Ce que fait ce fichier :</p>
+<ul>
+<li>Il vérifie le téléphone (format algérien <code>05</code>, <code>06</code> ou <code>07</code> + 8 chiffres) et l'adresse.</li>
+<li>Il retire le stock seulement s'il en reste assez. S'il en manque pour un des produits, il remet ce qu'il avait déjà retiré et refuse toute la commande.</li>
+<li>Une commande <b>Annulée</b> rend son stock, puis elle est <b>verrouillée</b>. Sans ce verrou, recliquer sur « Annulée » rendrait le stock deux fois.</li>
+</ul>
+
+<h3>2.7 — L'envoi de photos</h3>
+<p><b>Crée</b> <code>backend/routes/upload.js</code> :</p>
+<div class="fichier">backend/routes/upload.js</div>
+<pre>import express from 'express';
+import multer from 'multer';
+import fs from 'node:fs';
+import path from 'node:path';
+import { v2 as cloudinary } from 'cloudinary';
+import { protect, isAdmin } from '../middleware/auth.js';
+
+const router = express.Router();
+
+// La photo reste en MÉMOIRE le temps de l'envoyer : 3 Mo maximum, images seulement.
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 3 * 1024 * 1024 },
+  fileFilter: function (req, file, cb) {
+    if (!file.mimetype.startsWith('image/')) {
+      return cb(new Error('Seules les images sont acceptées'));
+    }
+    cb(null, true);
+  }
+});
+
+// Cloudinary lit TOUT SEUL la variable CLOUDINARY_URL (cloudinary://CLE:SECRET@NOM_DU_CLOUD).
+function envoyerVersCloudinary(buffer) {
+  return new Promise(function (resolve, reject) {
+    const flux = cloudinary.uploader.upload_stream({ folder: 'dzshop' }, function (err, resultat) {
+      if (err) reject(err);
+      else resolve(resultat);
+    });
+    flux.end(buffer);
+  });
+}
+
+// ENVOYER UNE PHOTO (admin)  →  POST /api/upload   (champ "image" du formulaire)
+router.post('/', protect, isAdmin, upload.single('image'), async function (req, res) {
+  if (!req.file) return res.status(400).json({ message: 'Aucune image envoyée' });
+
+  try {
+    // En ligne (et chez toi si tu as rempli CLOUDINARY_URL) : la photo part sur Cloudinary.
+    if (process.env.CLOUDINARY_URL) {
+      const resultat = await envoyerVersCloudinary(req.file.buffer);
+      return res.status(201).json({ imageUrl: resultat.secure_url });
+    }
+
+    // Sans Cloudinary (tests sur ton PC) : la photo va dans le dossier backend/uploads.
+    fs.mkdirSync('uploads', { recursive: true });
+    const nomFichier = Date.now() + '-' + Math.round(Math.random() * 1e9) + path.extname(req.file.originalname);
+    fs.writeFileSync(path.join('uploads', nomFichier), req.file.buffer);
+    res.status(201).json({ imageUrl: req.protocol + '://' + req.get('host') + '/uploads/' + nomFichier });
+  } catch (err) {
+    // Le message de Cloudinary est renvoyé tel quel : il dit exactement ce qui ne va pas
+    // (ex : "Unknown API key" = CLOUDINARY_URL mal recopiée).
+    res.status(500).json({ message: 'Cloudinary : ' + err.message });
+  }
+});
+
+// Fichier trop lourd, pas une image... : un message clair au lieu d'une page d'erreur.
+router.use(function (err, req, res, next) {
+  const message = err.code === 'LIMIT_FILE_SIZE' ? 'Photo trop lourde (3 Mo maximum)' : err.message;
+  res.status(400).json({ message });
+});
+
+export default router;</pre>
+<p>Sur ton PC, sans Cloudinary, les photos vont dans <code>backend/uploads</code>. En ligne, elles iront sur Cloudinary (étape 7). Si Cloudinary refuse, son message exact est affiché dans l'espace admin, au lieu d'une simple « erreur 500 ».</p>
+
+<h3>2.8 — L'espace admin côté API : statistiques et comptes</h3>
+<p><b>Crée</b> <code>backend/routes/admin.js</code> :</p>
+<div class="fichier">backend/routes/admin.js</div>
+<pre>import express from 'express';
+import mongoose from 'mongoose';
+import User from '../model/user.js';
+import Produit from '../models/produits.js';
+import Order from '../models/order.js';
+import { protect, isAdmin } from '../middleware/auth.js';
+
+const router = express.Router();
+
+// Tout ce fichier est réservé à l'admin : on met les deux gardiens une seule fois ici.
+router.use(protect, isAdmin);
+
+// Les jours du graphique sont comptés à l'heure d'Alger (sur ton PC comme sur Render).
+const FUSEAU = 'Africa/Algiers';
+const UN_JOUR = 24 * 60 * 60 * 1000;
+
+function jourAlger(date) {
+  // "en-CA" écrit les dates sous la forme 2026-10-03
+  return new Intl.DateTimeFormat('en-CA', { timeZone: FUSEAU }).format(date);
+}
+
+// STATISTIQUES  →  GET /api/admin/stats
+router.get('/stats', async function (req, res) {
+  const maintenant = Date.now();
+  const jours = [];
+  for (let i = 6; i &gt;= 0; i--) {
+    jours.push(jourAlger(new Date(maintenant - i * UN_JOUR)));
+  }
+
+  const [nbClients, nbProduits, nbCommandes, parStatut, chiffre, parJour, stockFaible] = await Promise.all([
+    User.countDocuments({ role: 'client' }),
+    Produit.countDocuments(),
+    Order.countDocuments(),
+    Order.aggregate([{ $group: { _id: '$statut', nombre: { $sum: 1 } } }]),
+    // Chiffre d'affaires = commandes LIVRÉES seulement (l'argent vraiment encaissé)
+    Order.aggregate([
+      { $match: { statut: 'Livrée' } },
+      { $group: { _id: null, total: { $sum: '$total' } } }
+    ]),
+    // Ventes des 7 derniers jours (toutes sauf annulées), regroupées par jour à l'heure d'Alger
+    Order.aggregate([
+      { $match: { createdAt: { $gte: new Date(maintenant - 8 * UN_JOUR) }, statut: { $ne: 'Annulée' } } },
+      { $group: {
+        _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt', timezone: FUSEAU } },
+        ventes: { $sum: '$total' },
+        commandes: { $sum: 1 }
+      } }
+    ]),
+    Produit.find({ stock: { $lt: 5 } }).select('name stock').sort({ stock: 1 }).limit(5)
+  ]);
+
+  const statuts = { 'En attente': 0, 'Expédiée': 0, 'Livrée': 0, 'Annulée': 0 };
+  for (const ligne of parStatut) statuts[ligne._id] = ligne.nombre;
+
+  const ventes7jours = jours.map(function (jour) {
+    const trouve = parJour.find(function (ligne) { return ligne._id === jour; });
+    return {
+      jour: jour.slice(8, 10) + '/' + jour.slice(5, 7),
+      ventes: trouve ? trouve.ventes : 0,
+      commandes: trouve ? trouve.commandes : 0
+    };
+  });
+
+  res.json({
+    nbClients,
+    nbProduits,
+    nbCommandes,
+    statuts,
+    chiffreAffaires: chiffre.length ? chiffre[0].total : 0,
+    ventes7jours,
+    stockFaible
+  });
+});
+
+// LISTE DES COMPTES  →  GET /api/admin/users
+router.get('/users', async function (req, res) {
+  const users = await User.find().select('nom email role createdAt').sort({ createdAt: -1 });
+  res.json(users);
+});
+
+// CHANGER UN RÔLE  →  PATCH /api/admin/users/:id/role
+router.patch('/users/:id/role', async function (req, res) {
+  const { role } = req.body;
+  if (!['client', 'admin'].includes(role)) {
+    return res.status(400).json({ message: 'Rôle invalide' });
+  }
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(404).json({ message: 'Compte introuvable' });
+  }
+
+  // Garde-fou : on ne peut pas changer SON PROPRE rôle.
+  // Sinon un clic maladroit et il n'y a plus aucun admin pour réparer.
+  if (String(req.params.id) === String(req.user._id)) {
+    return res.status(400).json({ message: 'Tu ne peux pas changer ton propre rôle' });
+  }
+
+  const user = await User.findByIdAndUpdate(req.params.id, { role }, { new: true }).select('nom email role createdAt');
+  if (!user) return res.status(404).json({ message: 'Compte introuvable' });
+  res.json(user);
+});
+
+export default router;</pre>
+<ul>
+<li><code>router.use(protect, isAdmin)</code> en haut : <b>toutes</b> les routes du fichier sont réservées à l'admin, sans risque d'en oublier une.</li>
+<li>Le graphique compte les jours <b>à l'heure d'Alger</b>. Sans ça, les ventes du jour n'apparaîtraient pas au bon endroit : MongoDB range les dates à l'heure de Londres.</li>
+<li><b>Garde-fou</b> : tu ne peux pas changer <b>ton propre</b> rôle. Sinon, un clic maladroit et il n'y a plus aucun admin pour réparer.</li>
+</ul>
+
+<h3>2.9 — Le script pour devenir admin</h3>
+<p><b>Crée</b> <code>backend/makeAdmin.js</code> (clic droit sur <code>backend</code> → New File) :</p>
+<div class="fichier">backend/makeAdmin.js</div>
+<pre>// Utilisation (depuis le dossier backend) :
+//   node makeAdmin.js ton-email@exemple.com
+// Donne le rôle "admin" à un compte qui existe déjà (crée-le d'abord sur le site).
+
+import 'dotenv/config';
+import mongoose from 'mongoose';
+import User from './model/user.js';
+
+const email = (process.argv[2] || '').trim();
+
+if (!email) {
+  console.log('Utilisation : node makeAdmin.js ton-email@exemple.com');
+  process.exit(1);
+}
+
+try {
+  await mongoose.connect(process.env.MONGO_URI);
+  // On cherche l'email tel quel ET en minuscules (anciens comptes avec majuscules)
+  const user = await User.findOneAndUpdate({ email: { $in: [email, email.toLowerCase()] } }, { role: 'admin' }, { new: true });
+  if (user) {
+    console.log('✅ ' + user.email + ' est maintenant admin');
+  } else {
+    console.log('❌ Aucun compte avec l\'email ' + email + ' : inscris-toi d\'abord sur le site');
+  }
+} catch (err) {
+  console.log('❌ Erreur : ' + err.message);
+} finally {
+  await mongoose.disconnect();
+}</pre>
+<p>On s'en sert à l'étape 5.</p>
+
+<h3>2.10 — <code>server.js</code> : tout brancher</h3>
+<p><b>Ouvre</b> <code>backend/server.js</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code> :</p>
+<div class="fichier">backend/server.js</div>
+<pre>// "dotenv/config" en TOUT PREMIER : le fichier .env est lu avant que les routes
+// ne regardent process.env (sinon JWT_SECRET serait encore vide pour elles).
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import produitRoutes from './routes/produits.js';
+import authRoutes from './routes/auth.js';
+import orderRoutes from './routes/orders.js';
+import uploadRoutes from './routes/upload.js';
+import adminRoutes from './routes/admin.js';
+
+// Sans phrase secrète, on refuse de démarrer : mieux vaut planter que d'être piratable.
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET manquant : ajoute-le dans backend/.env (ou dans Render → Environment)');
+}
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(function () { console.log('MongoDB connecté'); })
+  .catch(function (err) { console.log('Erreur MongoDB :', err.message); });
+
+const app = express();
+
+// Qui a le droit d'appeler l'API depuis un navigateur ?
+// Ton site en local (Vite, port 5173) + ton site en ligne (FRONTEND_URL, sans "/" à la fin).
+const siteEnLigne = (process.env.FRONTEND_URL || '').trim().replace(/\/+$/, '');
+const origines = ['http://localhost:5173', siteEnLigne].filter(Boolean);
+app.use(cors({ origin: origines }));
+app.use(express.json());
+
+// Photos envoyées en local quand Cloudinary n'est pas configuré
+app.use('/uploads', express.static('uploads'));
+
+app.get('/', function (req, res) {
+  res.json({ message: 'API DZShop en ligne' });
+});
+
+app.use('/api/products', produitRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/admin', adminRoutes);
+
+// En local : 5000. En ligne : Render choisit le port et le met dans PORT.
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, function () {
+  console.log('Serveur sur http://localhost:' + PORT);
+});</pre>
+<ul>
+<li><code>import 'dotenv/config'</code> en <b>premier</b> : le <code>.env</code> est lu avant tout le reste.</li>
+<li>Sans <code>JWT_SECRET</code>, l'API refuse de démarrer, avec un message clair.</li>
+<li>Le <b>CORS</b> n'accepte plus que ton site : <code>localhost:5173</code> et l'adresse de <code>FRONTEND_URL</code>.</li>
+<li>Le port vient de <code>PORT</code> sur Render, et vaut 5000 sur ton PC.</li>
+</ul>
+<div class="box ok"><b class="t">✅ Test de l'API</b>
+<div class="fichier terminal">Terminal</div>
+<pre>cd backend
+npm run dev</pre>
+<p>Tu dois voir <code>Serveur sur http://localhost:5000</code> puis <code>MongoDB connecté</code>. Ouvre <code>http://localhost:5000</code> dans le navigateur : <code>{"message":"API DZShop en ligne"}</code>. Puis <code>http://localhost:5000/api/products</code> : tes produits. <b>Laisse ce terminal ouvert</b>, et ouvre-en un deuxième (icône <b>+</b>) pour la suite.</p></div>
+<div class="box warn"><b class="t">⚠️ Si tu vois une erreur</b>
+<ul style="margin-bottom:0">
+<li><code>JWT_SECRET manquant</code> : la ligne <code>JWT_SECRET=</code> de <code>backend/.env</code> est vide ou mal écrite (étape 1.3).</li>
+<li><code>Erreur MongoDB : bad auth</code> : le mot de passe dans <code>MONGO_URI</code> n'est pas le bon (recopie celui de l'étape 1.1).</li>
+<li><code>Cannot find module './routes/....js'</code> : un fichier de l'étape 2 n'a pas été créé, ou il est mal nommé (attention aux majuscules).</li>
+</ul></div>
+
+<!-- ============ 3 ============ -->
+<h2><span class="etape">3</span>Le site : connexion, vraies photos, commande</h2>
+<p>Tout se passe dans <code>reacconter</code>. Dans le <b>deuxième terminal</b> (à la racine du projet).</p>
+
+<h3>3.1 — Les photos des produits</h3>
+<p>Tes produits de la base pointent vers <code>/assets/pic1.jpeg</code>…<code>/assets/pic6.jpeg</code>, mais ces fichiers n'existaient pas dans le site. C'est pour ça que <code>produits.jsx</code> et <code>produitsinfo.jsx</code> choisissent une des 6 images fixes (ta fonction <code>getProductImage</code> de ton dernier envoi). Le problème : avec ce système, la photo enregistrée dans la base n'est jamais utilisée, donc une photo ajoutée depuis l'espace admin ne s'afficherait jamais. On copie les 6 images au bon endroit, dans <code>reacconter/public/assets</code>, et à l'étape 3.4 les pages afficheront la <b>vraie</b> photo de chaque produit :</p>
+<div class="fichier terminal">Terminal</div>
+<pre>New-Item -ItemType Directory -Force reacconter\public\assets | Out-Null
+Copy-Item reacconter\src\pic.png\*.jpeg reacconter\public\assets\</pre>
+<p>Vérifie dans VS Code : <code>reacconter/public/assets</code> contient <code>pic1.jpeg</code> à <code>pic6.jpeg</code>.</p>
+
+<h3>3.2 — L'adresse de l'API et les petits outils</h3>
+<p><b>Ouvre</b> <code>reacconter/src/api/axios.js</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code> :</p>
+<div class="fichier">reacconter/src/api/axios.js</div>
+<pre>import axios from 'axios';
+
+// L'adresse de l'API :
+// - si VITE_API_URL est rempli (sur ton PC dans reacconter/.env, en ligne sur Netlify) : on la prend ;
+// - sinon, sur ton PC : http://localhost:5000 ;
+// - sinon, en ligne : ton API Render.
+function trouverAdresseApi() {
+  const configuree = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '').replace(/\/api$/, '');
+  if (configuree) return configuree;
+
+  if (typeof window !== 'undefined' &amp;&amp; window.location.hostname === 'localhost') {
+    return 'http://localhost:5000';
+  }
+
+  return 'https://reactconter.onrender.com';
+}
+
+export const API_URL = trouverAdresseApi();
+
+const api = axios.create({
+  baseURL: API_URL + '/api'
+});
+
+function getStoredToken() {
+  try {
+    return localStorage.getItem('token');
+  } catch {
+    return null;
+  }
+}
+
+export function setAuthToken(t) {
+  try {
+    if (t) localStorage.setItem('token', t);
+    else localStorage.removeItem('token');
+  } catch {
+    // le navigateur refuse le stockage : on continue sans
+  }
+}
+
+// Avant CHAQUE appel, on ajoute le bracelet de connexion (s'il existe).
+api.interceptors.request.use(function (config) {
+  const token = getStoredToken();
+  if (token) {
+    config.headers.Authorization = 'Bearer ' + token;
+  }
+  return config;
+});
+
+export default api;</pre>
+<p><b>Crée</b> <code>reacconter/src/outils.js</code> : l'adresse d'une photo, l'affichage des prix en DA, le calcul de la livraison et des dates, au même endroit pour toutes les pages :</p>
+<div class="fichier">reacconter/src/outils.js</div>
+<pre>import { API_URL } from './api/axios';
+
+// L'adresse d'une photo de produit, quelle que soit sa forme :
+// - "https://res.cloudinary.com/..."  → déjà complète (Cloudinary)
+// - "/uploads/123.jpg"                → photo envoyée sur ton PC : servie par l'API
+// - "/assets/pic1.jpeg"               → photo du dossier reacconter/public/assets : servie par le site
+export function imageProduit(image) {
+  if (!image) return 'https://placehold.co/600x600/efe7f4/5a2a6d?text=DZShop';
+  if (/^https?:\/\//.test(image)) return image;
+  if (image.startsWith('/uploads/')) return API_URL + image;
+  return image;
+}
+
+// 12500 → "12 500 DA"
+export function prix(montant) {
+  return Number(montant || 0).toLocaleString('fr-FR') + ' DA';
+}
+
+// Les mêmes règles que l'API : livraison gratuite dès 10 000 DA, sinon 500 DA.
+export function fraisLivraison(sousTotal) {
+  return sousTotal &gt;= 10000 || sousTotal === 0 ? 0 : 500;
+}
+
+export function dateFr(date) {
+  return new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+}</pre>
+<p><b>Crée</b> <code>reacconter/src/wilayas.js</code> (les 58 wilayas) :</p>
+<div class="fichier">reacconter/src/wilayas.js</div>
+<pre>// Les 58 wilayas d'Algérie, dans l'ordre de leur numéro.
+export const wilayas = [
+  'Adrar', 'Chlef', 'Laghouat', 'Oum El Bouaghi', 'Batna', 'Béjaïa', 'Biskra', 'Béchar',
+  'Blida', 'Bouira', 'Tamanrasset', 'Tébessa', 'Tlemcen', 'Tiaret', 'Tizi Ouzou', 'Alger',
+  'Djelfa', 'Jijel', 'Sétif', 'Saïda', 'Skikda', 'Sidi Bel Abbès', 'Annaba', 'Guelma',
+  'Constantine', 'Médéa', 'Mostaganem', "M'Sila", 'Mascara', 'Ouargla', 'Oran', 'El Bayadh',
+  'Illizi', 'Bordj Bou Arréridj', 'Boumerdès', 'El Tarf', 'Tindouf', 'Tissemsilt', 'El Oued', 'Khenchela',
+  'Souk Ahras', 'Tipaza', 'Mila', 'Aïn Defla', 'Naâma', 'Aïn Témouchent', 'Ghardaïa', 'Relizane',
+  'Timimoun', 'Bordj Badji Mokhtar', 'Ouled Djellal', 'Béni Abbès', 'In Salah', 'In Guezzam', 'Touggourt', 'Djanet',
+  "El M'Ghair", 'El Meniaa'
+];</pre>
+
+<h3>3.3 — La connexion partagée par toutes les pages</h3>
+<div class="box tip"><b class="t">💡 C'est quoi, un Context ?</b>
+Aujourd'hui, après la connexion, seule la page de connexion sait qui tu es : le menu affiche toujours « Connexion ». Un <b>Context</b>, c'est un <b>tableau d'affichage</b> dans le hall : n'importe quelle page peut lire « qui est connecté » avec <code>useAuth()</code>, sans faire passer l'info de page en page.</div>
+<p><b>Crée</b> <code>reacconter/src/AuthContext.jsx</code> :</p>
+<div class="fichier">reacconter/src/AuthContext.jsx</div>
+<pre>/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useEffect, useState } from 'react';
+import api, { setAuthToken } from './api/axios';
+
+// Le "tableau d'affichage" de la connexion : n'importe quelle page peut savoir
+// qui est connecté (useAuth), sans faire passer l'info de page en page.
+const AuthContext = createContext(null);
+
+function lireCompteSauvegarde() {
+  try {
+    const texte = localStorage.getItem('user');
+    return texte &amp;&amp; localStorage.getItem('token') ? JSON.parse(texte) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(lireCompteSauvegarde);
+
+  // Au démarrage, on demande à l'API si le bracelet est toujours valable
+  // (et si le rôle a changé). S'il ne l'est plus, on déconnecte proprement.
+  useEffect(function () {
+    if (!localStorage.getItem('token')) return;
+    api.get('/auth/me')
+      .then(function (reponse) {
+        setUser(reponse.data);
+        localStorage.setItem('user', JSON.stringify(reponse.data));
+      })
+      .catch(function (erreur) {
+        if (erreur.response?.status === 401) logout();
+      });
+  }, []);
+
+  // Appelée après une inscription / connexion réussie (classique ou Google).
+  function login(donnees) {
+    const compte = { id: donnees.id, nom: donnees.nom, email: donnees.email, role: donnees.role };
+    setAuthToken(donnees.token);
+    localStorage.setItem('user', JSON.stringify(compte));
+    setUser(compte);
+  }
+
+  function logout() {
+    setAuthToken(null);
+    localStorage.removeItem('user');
+    setUser(null);
+  }
+
+  return (
+    &lt;AuthContext.Provider value={{ user, login, logout }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
+}</pre>
+<p><b>Crée</b> <code>reacconter/src/PrivateRoute.jsx</code> (le vigile des pages réservées) :</p>
+<div class="fichier">reacconter/src/PrivateRoute.jsx</div>
+<pre>import { Navigate } from 'react-router-dom';
+import { useAuth } from './AuthContext.jsx';
+
+// Le vigile des pages :
+// - pas connectée → direction la page de connexion ;
+// - page admin mais compte client → retour à l'accueil.
+// (C'est seulement pour l'affichage : la vraie protection est dans l'API.)
+export default function PrivateRoute({ children, admin = false }) {
+  const { user } = useAuth();
+
+  if (!user) return &lt;Navigate to='/connexion' replace /&gt;;
+  if (admin &amp;&amp; user.role !== 'admin') return &lt;Navigate to='/' replace /&gt;;
+
+  return children;
+}</pre>
+<p><b>Ouvre</b> <code>reacconter/src/main.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code> (on entoure l'application avec <code>AuthProvider</code>) :</p>
+<div class="fichier">reacconter/src/main.jsx</div>
+<pre>import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { AuthProvider } from './AuthContext.jsx';
+import './index.css';
+import App from './App.jsx';
+
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
+// AuthProvider entoure toute l'application : chaque page peut savoir qui est connecté.
+const app = (
+  &lt;AuthProvider&gt;
+    &lt;App /&gt;
+  &lt;/AuthProvider&gt;
+);
+
+createRoot(document.getElementById('root')).render(
+  &lt;StrictMode&gt;
+    {googleClientId ? (
+      &lt;GoogleOAuthProvider clientId={googleClientId}&gt;{app}&lt;/GoogleOAuthProvider&gt;
+    ) : (
+      app
+    )}
+  &lt;/StrictMode&gt;
+);</pre>
+<p><b>Ouvre</b> <code>reacconter/src/navbar.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>. Le menu affiche ton nom, « Mes commandes », Déconnexion, et le bouton Admin <b>seulement pour l'admin</b> :</p>
+<div class="fichier">reacconter/src/navbar.jsx</div>
+<pre>import './navbar.css';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext.jsx';
+
+export default function Navbar({ cartCount = 0 }) {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  function seDeconnecter() {
+    logout();
+    navigate('/');
+  }
+
+  return (
+    &lt;header className='navbar'&gt;
+      &lt;nav className='navbar-container'&gt;
+        &lt;Link to='/' className='navbar-logo'&gt;DZShop&lt;/Link&gt;
+
+        &lt;div className='navbar-links'&gt;
+          &lt;NavLink to='/' end&gt;Accueil&lt;/NavLink&gt;
+          &lt;NavLink to='/produits'&gt;Produits&lt;/NavLink&gt;
+          {user &amp;&amp; &lt;NavLink to='/mes-commandes'&gt;Mes commandes&lt;/NavLink&gt;}
+        &lt;/div&gt;
+
+        &lt;div className='navbar-actions'&gt;
+          &lt;Link to='/panier' className='btn btn-outline'&gt;
+            Panier
+            {cartCount &gt; 0 &amp;&amp; &lt;span className='badge'&gt;{cartCount}&lt;/span&gt;}
+          &lt;/Link&gt;
+
+          {/* Le bouton Admin n'apparaît QUE pour un compte admin */}
+          {user?.role === 'admin' &amp;&amp; (
+            &lt;Link to='/admin' className='btn btn-admin'&gt;Admin&lt;/Link&gt;
+          )}
+
+          {user ? (
+            &lt;&gt;
+              &lt;span className='navbar-user'&gt;👤 {user.nom}&lt;/span&gt;
+              &lt;button type='button' className='btn btn-outline' onClick={seDeconnecter}&gt;Déconnexion&lt;/button&gt;
+            &lt;/&gt;
+          ) : (
+            &lt;Link to='/connexion' className='btn btn-primary'&gt;Connexion&lt;/Link&gt;
+          )}
+        &lt;/div&gt;
+      &lt;/nav&gt;
+    &lt;/header&gt;
+  );
+}</pre>
+<p><b>Ouvre</b> <code>reacconter/src/user-page.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>. Ton formulaire ne change pas ; seule la fonction <code>saveAuth</code> prévient maintenant le Context, puis envoie l'admin sur son espace :</p>
+<div class="fichier">reacconter/src/user-page.jsx</div>
+<pre>import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import api from './api/axios';
+import { useAuth } from './AuthContext.jsx';
+import './produits-cart.css';
+
+function AuthPage() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [signUpData, setSignUpData] = useState({
+    email: '',
+    phone: '',
+    password: '',
+    name: '',
+    surname: ''
+  });
+  const [signInData, setSignInData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleSignUpChange = (e) =&gt; {
+    const { name, value } = e.target;
+    setSignUpData({ ...signUpData, [name]: value });
+  };
+
+  const handleSignInChange = (e) =&gt; {
+    const { name, value } = e.target;
+    setSignInData({ ...signInData, [name]: value });
+  };
+
+  // Connexion réussie : on prévient AuthContext (le menu se met à jour tout seul),
+  // puis l'admin va sur son espace, les clients sur l'accueil.
+  const saveAuth = (userData) =&gt; {
+    login(userData);
+    navigate(userData.role === 'admin' ? '/admin' : '/');
+  };
+
+  const handleSignUpSubmit = async (e) =&gt; {
+    e.preventDefault();
+
+    if (!signUpData.email) {
+      alert('Veuillez entrer un email');
+      return;
+    }
+
+    if (!signUpData.password || !signUpData.name || !signUpData.surname) {
+      alert('Veuillez remplir tous les champs');
+      return;
+    }
+
+    try {
+      const response = await api.post('/auth/register', {
+        nom: `${signUpData.name} ${signUpData.surname}`.trim(),
+        email: signUpData.email,
+        password: signUpData.password
+      });
+
+      saveAuth(response.data);
+      setSignUpData({ email: '', phone: '', password: '', name: '', surname: '' });
+    } catch (error) {
+      alert(error?.response?.data?.message || 'Erreur lors de la création du compte');
+    }
+  };
+
+  const handleSignInSubmit = async (e) =&gt; {
+    e.preventDefault();
+
+    if (!signInData.email || !signInData.password) {
+      alert('Veuillez entrer votre email et mot de passe');
+      return;
+    }
+
+    try {
+      const response = await api.post('/auth/login', {
+        email: signInData.email,
+        password: signInData.password
+      });
+
+      saveAuth(response.data);
+      setSignInData({ email: '', password: '' });
+    } catch (error) {
+      alert(error?.response?.data?.message || 'Erreur lors de la connexion');
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) =&gt; {
+    try {
+      const response = await api.post('/auth/google', {
+        credential: credentialResponse.credential
+      });
+
+      saveAuth(response.data);
+    } catch (error) {
+      alert(error?.response?.data?.message || 'La connexion Google a échoué');
+    }
+  };
+
+  return (
+    &lt;div className='auth-page'&gt;
+      &lt;div className='auth-container'&gt;
+        &lt;div className='auth-tabs'&gt;
+          &lt;button
+            className={`auth-tab ${!isSignUp ? 'active' : ''}`}
+            onClick={() =&gt; setIsSignUp(false)}
+          &gt;
+            Connexion
+          &lt;/button&gt;
+          &lt;button
+            className={`auth-tab ${isSignUp ? 'active' : ''}`}
+            onClick={() =&gt; setIsSignUp(true)}
+          &gt;
+            Inscription
+          &lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;div className='google-auth-box'&gt;
+          {googleClientId ? (
+            &lt;GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() =&gt; alert('Google login failed')}
+              text='continue_with'
+              size='large'
+              shape='pill'
+            /&gt;
+          ) : (
+            &lt;p className='google-auth-warning'&gt;Ajoutez VITE_GOOGLE_CLIENT_ID dans votre fichier .env pour activer Google.&lt;/p&gt;
+          )}
+        &lt;/div&gt;
+
+        {!isSignUp ? (
+          &lt;div className='auth-form-container'&gt;
+            &lt;div className='auth-header'&gt;
+              &lt;p className='auth-tag'&gt;Connexion&lt;/p&gt;
+              &lt;h2&gt;Se connecter&lt;/h2&gt;
+              &lt;p className='auth-subtitle'&gt;Accédez à votre compte&lt;/p&gt;
+            &lt;/div&gt;
+
+            &lt;form className='auth-form' onSubmit={handleSignInSubmit}&gt;
+              &lt;label className='auth-field'&gt;
+                &lt;span&gt;Email&lt;/span&gt;
+                &lt;input
+                  type='email'
+                  name='email'
+                  placeholder='Votre email'
+                  value={signInData.email}
+                  onChange={handleSignInChange}
+                /&gt;
+              &lt;/label&gt;
+
+              &lt;label className='auth-field'&gt;
+                &lt;span&gt;Mot de passe&lt;/span&gt;
+                &lt;input
+                  type='password'
+                  name='password'
+                  placeholder='Votre mot de passe'
+                  value={signInData.password}
+                  onChange={handleSignInChange}
+                /&gt;
+              &lt;/label&gt;
+
+              &lt;button type='submit' className='auth-btn'&gt;Se connecter&lt;/button&gt;
+            &lt;/form&gt;
+          &lt;/div&gt;
+        ) : (
+          &lt;div className='auth-form-container'&gt;
+            &lt;div className='auth-header'&gt;
+              &lt;p className='auth-tag'&gt;Inscription&lt;/p&gt;
+              &lt;h2&gt;Créer un compte&lt;/h2&gt;
+              &lt;p className='auth-subtitle'&gt;Rejoignez-nous aujourd'hui&lt;/p&gt;
+            &lt;/div&gt;
+
+            &lt;form className='auth-form' onSubmit={handleSignUpSubmit}&gt;
+              &lt;div className='auth-field-row'&gt;
+                &lt;label className='auth-field'&gt;
+                  &lt;span&gt;Nom&lt;/span&gt;
+                  &lt;input
+                    type='text'
+                    name='name'
+                    placeholder='Votre nom'
+                    value={signUpData.name}
+                    onChange={handleSignUpChange}
+                  /&gt;
+                &lt;/label&gt;
+
+                &lt;label className='auth-field'&gt;
+                  &lt;span&gt;Prénom&lt;/span&gt;
+                  &lt;input
+                    type='text'
+                    name='surname'
+                    placeholder='Votre prénom'
+                    value={signUpData.surname}
+                    onChange={handleSignUpChange}
+                  /&gt;
+                &lt;/label&gt;
+              &lt;/div&gt;
+
+              &lt;label className='auth-field'&gt;
+                &lt;span&gt;Email&lt;/span&gt;
+                &lt;input
+                  type='email'
+                  name='email'
+                  placeholder='Votre email'
+                  value={signUpData.email}
+                  onChange={handleSignUpChange}
+                /&gt;
+              &lt;/label&gt;
+
+              &lt;label className='auth-field'&gt;
+                &lt;span&gt;Numéro de téléphone (optionnel)&lt;/span&gt;
+                &lt;input
+                  type='tel'
+                  name='phone'
+                  placeholder='Votre numéro de téléphone'
+                  value={signUpData.phone}
+                  onChange={handleSignUpChange}
+                /&gt;
+              &lt;/label&gt;
+
+              &lt;label className='auth-field'&gt;
+                &lt;span&gt;Mot de passe&lt;/span&gt;
+                &lt;input
+                  type='password'
+                  name='password'
+                  placeholder='Créer un mot de passe'
+                  value={signUpData.password}
+                  onChange={handleSignUpChange}
+                /&gt;
+              &lt;/label&gt;
+
+              &lt;button type='submit' className='auth-btn'&gt;Créer un compte&lt;/button&gt;
+            &lt;/form&gt;
+          &lt;/div&gt;
+        )}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default AuthPage;</pre>
+
+<h3>3.4 — Les pages produits avec les vraies photos</h3>
+<p><b>Ouvre</b> <code>reacconter/src/produits.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code> :</p>
+<div class="fichier">reacconter/src/produits.jsx</div>
+<pre>import { useState, useEffect } from 'react';
+import './produits.css';
+import { Link } from 'react-router-dom';
+import api from './api/axios';
+import { imageProduit, prix } from './outils.js';
+
+function Product() {
+  const [produits, setProduits] = useState([]);
+  const [chargement, setChargement] = useState(true);
+  const [erreur, setErreur] = useState('');
+
+  useEffect(function () {
+    api.get('/products')
+      .then(function (response) {
+        setProduits(response.data);
+      })
+      .catch(function () {
+        setErreur('Impossible de charger les produits. Si le site vient d\'être ouvert, attends 1 minute (le serveur se réveille) puis recharge la page.');
+      })
+      .finally(function () {
+        setChargement(false);
+      });
+  }, []);
+
+  if (chargement) return &lt;p className='page-info'&gt;Chargement des produits...&lt;/p&gt;;
+  if (erreur) return &lt;p className='page-erreur'&gt;{erreur}&lt;/p&gt;;
+  if (produits.length === 0) return &lt;p className='page-info'&gt;Aucun produit pour le moment.&lt;/p&gt;;
+
+  return (
+    &lt;div className='products'&gt;
+      {produits.map((p) =&gt; (
+        &lt;div key={p._id} className='product'&gt;
+          &lt;div className='product-image'&gt;
+            {/* La VRAIE photo du produit (celle enregistrée dans la base) */}
+            &lt;img src={imageProduit(p.image)} alt={p.name} /&gt;
+          &lt;/div&gt;
+
+          &lt;div className='product-info'&gt;
+            &lt;h3&gt;{p.name}&lt;/h3&gt;
+            &lt;p&gt;{prix(p.price)}&lt;/p&gt;
+            {p.stock === 0 &amp;&amp; &lt;span className='rupture'&gt;Rupture de stock&lt;/span&gt;}
+            &lt;Link to={`/produits/${p._id}`}&gt;Voir détails&lt;/Link&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+
+export default Product;</pre>
+<p><b>Ouvre</b> <code>reacconter/src/produitsinfo.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code> :</p>
+<div class="fichier">reacconter/src/produitsinfo.jsx</div>
+<pre>import { Link, useParams } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import api from './api/axios';
+import { imageProduit, prix } from './outils.js';
+import './produits-cart.css';
+
+function ProductDetails({ addToCart }) {
+
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [notFound, setNotFound] = useState(false);
+  const [ajoute, setAjoute] = useState(false);
+
+  useEffect(function () {
+    let annule = false;
+
+    api.get(`/products/${id}`)
+      .then(function (response) {
+        if (!annule) setProduct(response.data);
+      })
+      .catch(function () {
+        if (!annule) setNotFound(true);
+      });
+
+    return function () {
+      annule = true;
+    };
+  }, [id]);
+
+  function ajouter() {
+    addToCart(product);
+    setAjoute(true);
+  }
+
+  if (notFound) {
+    return (
+      &lt;div className="not-found"&gt;
+        &lt;h2&gt;Produit introuvable&lt;/h2&gt;
+        &lt;Link to="/produits"&gt;Retour aux produits&lt;/Link&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  if (!product) {
+    return (
+      &lt;div className="not-found"&gt;
+        &lt;h2&gt;Chargement...&lt;/h2&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  return (
+    &lt;div className="product-details"&gt;
+
+      &lt;Link to="/produits" className="back-link"&gt;
+        ← Retour aux produits
+      &lt;/Link&gt;
+
+      &lt;div className="details-container"&gt;
+
+        &lt;div className="details-image"&gt;
+          &lt;img src={imageProduit(product.image)} alt={product.name} /&gt;
+        &lt;/div&gt;
+
+        &lt;div className="details-info"&gt;
+
+          {product.category &amp;&amp; &lt;span className="category"&gt;{product.category}&lt;/span&gt;}
+
+          &lt;h1&gt;{product.name}&lt;/h1&gt;
+
+          {product.title &amp;&amp; &lt;p className="details-title"&gt;{product.title}&lt;/p&gt;}
+
+          {product.reviews &gt; 0 &amp;&amp; (
+            &lt;div className="details-rating"&gt;
+              &lt;span&gt;★★★★★&lt;/span&gt;
+              &lt;span&gt;{product.rating} ({product.reviews} avis)&lt;/span&gt;
+            &lt;/div&gt;
+          )}
+
+          &lt;div className="details-price"&gt;
+            &lt;p&gt;{prix(product.price)}&lt;/p&gt;
+          &lt;/div&gt;
+
+          {product.description &amp;&amp; &lt;p className="description"&gt;{product.description}&lt;/p&gt;}
+
+          &lt;div className="stock"&gt;
+            {product.stock &gt; 0
+              ? `✓ ${product.stock} en stock`
+              : "Rupture de stock"
+            }
+          &lt;/div&gt;
+
+          &lt;button
+            className="details-cart-btn"
+            onClick={ajouter}
+            disabled={product.stock === 0}
+          &gt;
+            🛒 Ajouter au panier
+          &lt;/button&gt;
+
+          {ajoute &amp;&amp; (
+            &lt;p className="ajout-ok"&gt;
+              Ajouté ! &lt;Link to="/panier"&gt;Voir le panier →&lt;/Link&gt;
+            &lt;/p&gt;
+          )}
+
+        &lt;/div&gt;
+
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+  );
+}
+
+export default ProductDetails;</pre>
+<p><b>Ouvre</b> <code>reacconter/src/dashbored.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>. Ta section « Produits vedettes » était vide : elle affiche maintenant les 3 derniers produits :</p>
+<div class="fichier">reacconter/src/dashbored.jsx</div>
+<pre>import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from './api/axios';
+import { imageProduit, prix } from './outils.js';
+import './dashbored.css';
+
+export default function Dashbored(){
+  // Les 3 produits les plus récents, pris dans l'API
+  const [vedettes, setVedettes] = useState([]);
+
+  useEffect(function () {
+    api.get('/products')
+      .then(function (reponse) { setVedettes(reponse.data.slice(0, 3)); })
+      .catch(function () { setVedettes([]); });
+  }, []);
+
+  return (
+    &lt;div className='landing'&gt;
+      &lt;section className='hero'&gt;
+        &lt;div className='container hero-inner'&gt;
+          &lt;h1&gt;Bienvenue sur DZShop&lt;/h1&gt;
+          &lt;p className='lead'&gt;Le meilleur de l'électronique, livré partout en Algérie.&lt;/p&gt;
+          &lt;Link className='btn primary hero-cta' to='/produits'&gt;Découvrir nos produits&lt;/Link&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section className='features'&gt;
+        &lt;div className='container features-grid'&gt;
+          &lt;div className='feature'&gt;
+            &lt;div className='feature-icon'&gt;🚚&lt;/div&gt;
+            &lt;h4&gt;Livraison 58 wilayas&lt;/h4&gt;
+            &lt;p className='muted'&gt;Gratuite dès 10 000 DZD d'achat.&lt;/p&gt;
+          &lt;/div&gt;
+
+          &lt;div className='feature'&gt;
+            &lt;div className='feature-icon'&gt;🔒&lt;/div&gt;
+            &lt;h4&gt;Paiement à la livraison&lt;/h4&gt;
+            &lt;p className='muted'&gt;Vous payez à la réception.&lt;/p&gt;
+          &lt;/div&gt;
+
+          &lt;div className='feature'&gt;
+            &lt;div className='feature-icon'&gt;↩️&lt;/div&gt;
+            &lt;h4&gt;Retour sous 7 jours&lt;/h4&gt;
+            &lt;p className='muted'&gt;Produit non conforme ? On le reprend.&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section className='container vedettes'&gt;
+        &lt;h2&gt;Produits vedettes&lt;/h2&gt;
+        &lt;div className='vedettes-grille'&gt;
+          {vedettes.map((p) =&gt; (
+            &lt;Link key={p._id} to={`/produits/${p._id}`} className='vedette'&gt;
+              &lt;img src={imageProduit(p.image)} alt={p.name} /&gt;
+              &lt;strong&gt;{p.name}&lt;/strong&gt;
+              &lt;span&gt;{prix(p.price)}&lt;/span&gt;
+            &lt;/Link&gt;
+          ))}
+        &lt;/div&gt;
+        &lt;div className='see-all'&gt;
+          &lt;Link className='btn outline' to='/produits'&gt;Voir tous les produits&lt;/Link&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+
+<h3>3.5 — Panier, commande et « Mes commandes »</h3>
+<p><b>Ouvre</b> <code>reacconter/src/CartPage.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code> (prix en DA, livraison comme l'API) :</p>
+<div class="fichier">reacconter/src/CartPage.jsx</div>
+<pre>import { Link, useNavigate } from 'react-router-dom';
+import { imageProduit, prix, fraisLivraison } from './outils.js';
+import './produits-cart.css';
+
+function CartItem({
+  item,
+  increaseQuantity,
+  decreaseQuantity,
+  removeFromCart
+}) {
+  return (
+    &lt;div className='cart-item'&gt;
+      &lt;img src={imageProduit(item.image)} alt={item.name} /&gt;
+
+      &lt;div className='cart-item-info'&gt;
+        &lt;h3&gt;{item.name}&lt;/h3&gt;
+        &lt;p&gt;{prix(item.price)}&lt;/p&gt;
+
+        &lt;div className='quantity'&gt;
+          &lt;button onClick={() =&gt; decreaseQuantity(item._id)} aria-label='Diminuer la quantité'&gt;−&lt;/button&gt;
+          &lt;span&gt;{item.quantity}&lt;/span&gt;
+          &lt;button onClick={() =&gt; increaseQuantity(item._id)} aria-label='Augmenter la quantité'&gt;+&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div className='cart-item-right'&gt;
+        &lt;strong&gt;{prix(Number(item.price) * item.quantity)}&lt;/strong&gt;
+        &lt;button className='remove-btn' onClick={() =&gt; removeFromCart(item._id)} aria-label='Retirer du panier'&gt;🗑️&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+function CartPage({ items, increaseQuantity, decreaseQuantity, removeFromCart }) {
+  const navigate = useNavigate();
+  const sousTotal = items.reduce((sum, item) =&gt; sum + Number(item.price) * item.quantity, 0);
+  const livraison = fraisLivraison(sousTotal);
+
+  if (!items.length) {
+    return (
+      &lt;div className='cart-empty'&gt;
+        &lt;h2&gt;Votre panier est vide&lt;/h2&gt;
+        &lt;p&gt;
+          Ajoutez quelques produits pour commencer votre achat.{' '}
+          &lt;Link to='/produits'&gt;Voir les produits&lt;/Link&gt;
+        &lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  return (
+    &lt;div className='cart-page'&gt;
+      &lt;div className='cart-header'&gt;
+        &lt;h2&gt;Panier&lt;/h2&gt;
+      &lt;/div&gt;
+
+      &lt;div className='cart-layout'&gt;
+        &lt;div className='cart-items'&gt;
+          {items.map((item) =&gt; (
+            &lt;CartItem
+              key={item._id}
+              item={item}
+              increaseQuantity={increaseQuantity}
+              decreaseQuantity={decreaseQuantity}
+              removeFromCart={removeFromCart}
+            /&gt;
+          ))}
+        &lt;/div&gt;
+
+        &lt;aside className='cart-summary'&gt;
+          &lt;h3&gt;Résumé&lt;/h3&gt;
+          &lt;div className='summary-row'&gt;
+            &lt;span&gt;Sous-total&lt;/span&gt;
+            &lt;strong&gt;{prix(sousTotal)}&lt;/strong&gt;
+          &lt;/div&gt;
+          &lt;div className='summary-row'&gt;
+            &lt;span&gt;Livraison&lt;/span&gt;
+            &lt;strong&gt;{livraison === 0 ? 'Gratuite' : prix(livraison)}&lt;/strong&gt;
+          &lt;/div&gt;
+          {livraison &gt; 0 &amp;&amp; (
+            &lt;p className='livraison-astuce'&gt;Livraison offerte dès 10 000 DA d'achat.&lt;/p&gt;
+          )}
+          &lt;div className='summary-row total'&gt;
+            &lt;span&gt;Total&lt;/span&gt;
+            &lt;strong&gt;{prix(sousTotal + livraison)}&lt;/strong&gt;
+          &lt;/div&gt;
+          &lt;button className='checkout-btn' onClick={() =&gt; navigate('/checkout')}&gt;Passer la commande&lt;/button&gt;
+        &lt;/aside&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default CartPage;</pre>
+<p><b>Ouvre</b> <code>reacconter/src/CheckoutPage.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>. Le formulaire demande maintenant téléphone et adresse (indispensables pour livrer), avec les 58 wilayas, et affiche le <b>total calculé par le serveur</b> :</p>
+<div class="fichier">reacconter/src/CheckoutPage.jsx</div>
+<pre>import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from './api/axios';
+import { wilayas } from './wilayas.js';
+import { prix, fraisLivraison } from './outils.js';
+import './produits-cart.css';
+
+function CheckoutPage({ cartItems = [], clearCart }) {
+  const [formData, setFormData] = useState({
+    nom: '',
+    prenom: '',
+    telephone: '',
+    wilaya: '',
+    adresse: ''
+  });
+  const [commande, setCommande] = useState(null);
+  const [envoi, setEnvoi] = useState(false);
+  const [erreur, setErreur] = useState('');
+
+  const updateField = (event) =&gt; {
+    const { name, value } = event.target;
+    setFormData((currentForm) =&gt; ({ ...currentForm, [name]: value }));
+  };
+
+  // Ce total n'est qu'un aperçu : le VRAI total est calculé par l'API.
+  const sousTotal = cartItems.reduce((sum, item) =&gt; sum + Number(item.price) * item.quantity, 0);
+  const total = sousTotal + fraisLivraison(sousTotal);
+
+  const handleSubmit = async (event) =&gt; {
+    event.preventDefault();
+    setErreur('');
+    setEnvoi(true);
+
+    try {
+      // On envoie SEULEMENT les identifiants et les quantités, jamais les prix.
+      const reponse = await api.post('/orders', {
+        items: cartItems.map((item) =&gt; ({ id: item._id, quantity: item.quantity })),
+        ...formData
+      });
+
+      setCommande(reponse.data);
+      clearCart();
+    } catch (error) {
+      setErreur(error?.response?.data?.message || 'Erreur lors de la commande');
+    }
+
+    setEnvoi(false);
+  };
+
+  if (commande) {
+    return (
+      &lt;section className='order-page checkout-page'&gt;
+        &lt;div className='order-card checkout-confirmation'&gt;
+          &lt;span className='checkout-confirmation-icon' aria-hidden='true'&gt;✓&lt;/span&gt;
+          &lt;h2&gt;Commande confirmée&lt;/h2&gt;
+          &lt;p&gt;Merci {commande.prenom} ! Nous vous appellerons au {commande.telephone} pour la livraison.&lt;/p&gt;
+          &lt;p className='order-total'&gt;Total à payer à la livraison : {prix(commande.total)}&lt;/p&gt;
+          &lt;Link className='order-submit-btn' to='/mes-commandes'&gt;Suivre ma commande&lt;/Link&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    );
+  }
+
+  if (cartItems.length === 0) {
+    return (
+      &lt;section className='order-page checkout-page'&gt;
+        &lt;div className='order-card'&gt;
+          &lt;div className='order-header'&gt;
+            &lt;p className='order-tag'&gt;Commande&lt;/p&gt;
+            &lt;h2&gt;Votre panier est vide&lt;/h2&gt;
+            &lt;p className='order-subtitle'&gt;Ajoutez des produits avant de commander.&lt;/p&gt;
+          &lt;/div&gt;
+          &lt;Link className='order-submit-btn' to='/produits'&gt;Voir les produits&lt;/Link&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    );
+  }
+
+  return (
+    &lt;section className='order-page checkout-page'&gt;
+      &lt;div className='order-card'&gt;
+        &lt;div className='order-header'&gt;
+          &lt;p className='order-tag'&gt;Commande&lt;/p&gt;
+          &lt;h2&gt;Finaliser votre commande&lt;/h2&gt;
+          &lt;p className='order-subtitle'&gt;Paiement à la livraison, partout en Algérie.&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;p className='order-total'&gt;Total : {prix(total)}&lt;/p&gt;
+
+        {erreur &amp;&amp; &lt;p className='page-erreur'&gt;{erreur}&lt;/p&gt;}
+
+        &lt;form className='order-form' onSubmit={handleSubmit}&gt;
+          &lt;div className='order-field-row'&gt;
+            &lt;label className='order-field'&gt;
+              &lt;span&gt;Nom&lt;/span&gt;
+              &lt;input name='nom' type='text' value={formData.nom} onChange={updateField} required /&gt;
+            &lt;/label&gt;
+            &lt;label className='order-field'&gt;
+              &lt;span&gt;Prénom&lt;/span&gt;
+              &lt;input name='prenom' type='text' value={formData.prenom} onChange={updateField} required /&gt;
+            &lt;/label&gt;
+          &lt;/div&gt;
+
+          &lt;label className='order-field'&gt;
+            &lt;span&gt;Téléphone&lt;/span&gt;
+            &lt;input name='telephone' type='tel' placeholder='0550 12 34 56' value={formData.telephone} onChange={updateField} required /&gt;
+          &lt;/label&gt;
+
+          &lt;label className='order-field'&gt;
+            &lt;span&gt;Wilaya&lt;/span&gt;
+            &lt;select name='wilaya' value={formData.wilaya} onChange={updateField} required&gt;
+              &lt;option value=''&gt;Choisir la wilaya&lt;/option&gt;
+              {wilayas.map((wilaya, index) =&gt; (
+                &lt;option key={wilaya} value={wilaya}&gt;{String(index + 1).padStart(2, '0')} - {wilaya}&lt;/option&gt;
+              ))}
+            &lt;/select&gt;
+          &lt;/label&gt;
+
+          &lt;label className='order-field'&gt;
+            &lt;span&gt;Adresse de livraison&lt;/span&gt;
+            &lt;input name='adresse' type='text' placeholder='Cité, rue, numéro, commune' value={formData.adresse} onChange={updateField} required /&gt;
+          &lt;/label&gt;
+
+          &lt;button type='submit' className='order-submit-btn' disabled={envoi}&gt;
+            {envoi ? 'Envoi...' : 'Confirmer la commande'}
+          &lt;/button&gt;
+        &lt;/form&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+
+export default CheckoutPage;</pre>
+<p><b>Crée</b> <code>reacconter/src/MesCommandes.jsx</code> :</p>
+<div class="fichier">reacconter/src/MesCommandes.jsx</div>
+<pre>import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from './api/axios';
+import { imageProduit, prix, dateFr } from './outils.js';
+
+// Une couleur par statut (les classes sont dans boutique.css)
+const CLASSE_STATUT = {
+  'En attente': 'statut-attente',
+  'Expédiée': 'statut-expediee',
+  'Livrée': 'statut-livree',
+  'Annulée': 'statut-annulee'
+};
+
+export default function MesCommandes() {
+  const [commandes, setCommandes] = useState([]);
+  const [chargement, setChargement] = useState(true);
+  const [erreur, setErreur] = useState('');
+
+  useEffect(function () {
+    api.get('/orders/mine')
+      .then(function (reponse) { setCommandes(reponse.data); })
+      .catch(function (error) { setErreur(error?.response?.data?.message || 'Impossible de charger tes commandes'); })
+      .finally(function () { setChargement(false); });
+  }, []);
+
+  return (
+    &lt;section className='mes-commandes'&gt;
+      &lt;h1&gt;Mes commandes&lt;/h1&gt;
+
+      {chargement &amp;&amp; &lt;p className='page-info'&gt;Chargement...&lt;/p&gt;}
+      {erreur &amp;&amp; &lt;p className='page-erreur'&gt;{erreur}&lt;/p&gt;}
+
+      {!chargement &amp;&amp; !erreur &amp;&amp; commandes.length === 0 &amp;&amp; (
+        &lt;p className='page-info'&gt;
+          Tu n'as pas encore commandé. &lt;Link to='/produits'&gt;Voir les produits&lt;/Link&gt;
+        &lt;/p&gt;
+      )}
+
+      {commandes.map(function (commande) {
+        return (
+          &lt;article key={commande._id} className='commande'&gt;
+            &lt;div className='commande-haut'&gt;
+              &lt;div&gt;
+                &lt;strong&gt;Commande du {dateFr(commande.createdAt)}&lt;/strong&gt;
+                &lt;small&gt;N° {commande._id.slice(-6).toUpperCase()}&lt;/small&gt;
+              &lt;/div&gt;
+              &lt;span className={'statut ' + CLASSE_STATUT[commande.statut]}&gt;{commande.statut}&lt;/span&gt;
+            &lt;/div&gt;
+
+            {commande.items.map(function (ligne, index) {
+              return (
+                &lt;div key={index} className='commande-ligne'&gt;
+                  &lt;img src={imageProduit(ligne.image)} alt='' /&gt;
+                  &lt;span&gt;{ligne.name} × {ligne.quantity}&lt;/span&gt;
+                  &lt;strong&gt;{prix(ligne.price * ligne.quantity)}&lt;/strong&gt;
+                &lt;/div&gt;
+              );
+            })}
+
+            &lt;div className='commande-bas'&gt;
+              &lt;span&gt;📍 {commande.adresse}, {commande.wilaya}&lt;/span&gt;
+              &lt;span&gt;Livraison : {commande.livraison ? prix(commande.livraison) : 'gratuite'}&lt;/span&gt;
+              &lt;strong&gt;Total : {prix(commande.total)}&lt;/strong&gt;
+            &lt;/div&gt;
+          &lt;/article&gt;
+        );
+      })}
+    &lt;/section&gt;
+  );
+}</pre>
+<p><b>Crée</b> <code>reacconter/src/boutique.css</code> (les styles de ces nouvelles parties, et un menu qui passe sur deux lignes sur téléphone au lieu de déborder) :</p>
+<div class="fichier">reacconter/src/boutique.css</div>
+<pre>/* Styles ajoutés pour les nouvelles parties de la boutique */
+
+.navbar-user {
+  font-weight: 700;
+  color: #263746;
+  white-space: nowrap;
+}
+
+.page-info,
+.page-erreur {
+  max-width: 720px;
+  margin: 32px auto;
+  padding: 14px 18px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.page-info {
+  color: #657786;
+}
+
+.page-erreur {
+  background: #fdecee;
+  color: #b42318;
+  border: 1px solid #f5c2c7;
+}
+
+.rupture {
+  display: inline-block;
+  margin-bottom: 6px;
+  color: #b42318;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.ajout-ok {
+  margin-top: 12px;
+  color: #157347;
+  font-weight: 600;
+}
+
+.livraison-astuce {
+  margin: 0 0 8px;
+  color: #657786;
+  font-size: 0.85rem;
+}
+
+.checkout-confirmation .order-submit-btn {
+  display: inline-block;
+  margin-top: 12px;
+  text-decoration: none;
+}
+
+/* ---------- Mes commandes ---------- */
+.mes-commandes {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 16px 64px;
+  text-align: left;
+}
+
+.mes-commandes h1 {
+  margin-bottom: 20px;
+  color: #263746;
+}
+
+.commande {
+  background: #fff;
+  border: 1px solid #dfeaf1;
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 20px rgba(86, 125, 138, 0.08);
+}
+
+.commande-haut {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.commande-haut small {
+  display: block;
+  color: #8a9aa8;
+}
+
+.commande-ligne {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid #eef3f7;
+}
+
+.commande-ligne img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.commande-bas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #eef3f7;
+  color: #657786;
+}
+
+.commande-bas strong {
+  color: #157347;
+}
+
+.statut {
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.statut-attente { background: #fff4d6; color: #8a5a00; }
+.statut-expediee { background: #dbeafe; color: #1e40af; }
+.statut-livree { background: #dcfce7; color: #166534; }
+.statut-annulee { background: #fee2e2; color: #b91c1c; }
+
+/* ---------- Produits vedettes (accueil) ---------- */
+.vedettes {
+  padding: 40px 16px;
+}
+
+.vedettes-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.vedette {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #dfeaf1;
+  border-radius: 16px;
+  color: #263746;
+  text-decoration: none;
+}
+
+.vedette img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.vedette span {
+  color: #0d6efd;
+  font-weight: 700;
+}
+
+/* ---------- Menu ---------- */
+.navbar-logo {
+  text-decoration: none;
+}
+
+.navbar-links a {
+  color: #263746;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.navbar-links a.active {
+  color: #0d6efd;
+}
+
+.navbar-actions .btn-outline {
+  color: #263746;
+}
+
+/* Sur téléphone : le menu passe sur deux lignes au lieu de déborder */
+@media (max-width: 700px) {
+  .navbar-container {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 16px;
+    gap: 8px 16px;
+  }
+
+  .navbar-links {
+    order: 3;
+    flex-basis: 100%;
+    gap: 16px;
+  }
+
+  .navbar-actions {
+    margin-left: auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .navbar-user {
+    display: none;
+  }
+}</pre>
+
+<!-- ============ 4 ============ -->
+<h2><span class="etape">4</span>L'espace admin complet</h2>
+<p>Ton ancien <code>AdminPage.jsx</code> affichait des chiffres inventés (le fichier <code>produits-data.js</code>). Le nouvel espace admin a 4 onglets qui parlent à la vraie API : <b>Tableau de bord</b> (chiffres + graphique), <b>Produits</b> (ajouter avec photo, modifier, supprimer), <b>Commandes</b> (changer le statut) et <b>Comptes</b> (rôles). On met tout dans un nouveau dossier <code>reacconter/src/admin</code>.</p>
+<p>D'abord la bibliothèque de graphiques <b>Recharts</b> :</p>
+<div class="fichier terminal">Terminal</div>
+<pre>cd reacconter
+npm install recharts
+cd ..</pre>
+<p>Crée le dossier : clic droit sur <code>reacconter/src</code> → <b>New Folder</b> → <code>admin</code>. Puis, dans ce dossier, crée ces 6 fichiers :</p>
+<div class="fichier">reacconter/src/admin/admin.css</div>
+<pre>/* Styles de l'espace admin (en plus de admin-page.css) */
+
+/* Les 4 tuiles de chiffres sur une seule ligne quand il y a la place */
+.admin-page .admin-stats {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin: 0 0 20px;
+}
+
+.admin-onglets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 28px 0 24px;
+}
+
+.admin-onglet {
+  padding: 10px 16px;
+  border: 1px solid #dfeaf1;
+  border-radius: 99px;
+  background: #fff;
+  color: #263746;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-onglet.actif {
+  background: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+}
+
+.admin-bloc {
+  background: #fff;
+  border: 1px solid #dfeaf1;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 24px rgba(86, 125, 138, 0.06);
+}
+
+.admin-bloc h2 {
+  margin: 0 0 12px;
+  font-size: 1.15rem;
+  color: #263746;
+}
+
+.admin-graphique {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.admin-deux-colonnes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.admin-ligne {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eef3f7;
+}
+
+.admin-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #263746;
+}
+
+.admin-form input,
+.admin-form textarea {
+  padding: 10px 12px;
+  border: 1px solid #cfdbe4;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 400;
+}
+
+.admin-form-ligne {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.admin-ok {
+  color: #157347;
+  font-weight: 700;
+}
+
+.admin-lien {
+  border: 0;
+  background: none;
+  color: #0d6efd;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.admin-lien.rouge {
+  color: #b42318;
+}
+
+.admin-produit-ligne {
+  display: grid;
+  grid-template-columns: 52px 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eef3f7;
+}
+
+.admin-produit-ligne img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.admin-produit-ligne span {
+  display: block;
+  color: #657786;
+  font-size: 0.88rem;
+}
+
+.admin-table select {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #cfdbe4;
+}
+
+@media (max-width: 860px) {
+  .admin-deux-colonnes {
+    grid-template-columns: 1fr;
+  }
+}</pre>
+<div class="fichier">reacconter/src/admin/AdminStats.jsx</div>
+<pre>import { useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import api from '../api/axios';
+import { prix } from '../outils.js';
+
+export default function AdminStats() {
+  const [stats, setStats] = useState(null);
+  const [erreur, setErreur] = useState('');
+
+  useEffect(function () {
+    api.get('/admin/stats')
+      .then(function (reponse) { setStats(reponse.data); })
+      .catch(function (error) { setErreur(error?.response?.data?.message || 'Statistiques indisponibles'); });
+  }, []);
+
+  if (erreur) return &lt;p className='page-erreur'&gt;{erreur}&lt;/p&gt;;
+  if (!stats) return &lt;p className='page-info'&gt;Chargement...&lt;/p&gt;;
+
+  const tuiles = [
+    { titre: 'Chiffre d\'affaires', valeur: prix(stats.chiffreAffaires), note: 'Commandes livrées' },
+    { titre: 'Commandes', valeur: stats.nbCommandes, note: stats.statuts['En attente'] + ' en attente' },
+    { titre: 'Clients', valeur: stats.nbClients, note: 'Comptes clients' },
+    { titre: 'Produits', valeur: stats.nbProduits, note: 'Au catalogue' }
+  ];
+
+  return (
+    &lt;&gt;
+      &lt;div className='admin-stats'&gt;
+        {tuiles.map(function (t) {
+          return (
+            &lt;article key={t.titre} className='admin-stat'&gt;
+              &lt;span className='admin-stat-label'&gt;{t.titre}&lt;/span&gt;
+              &lt;strong&gt;{t.valeur}&lt;/strong&gt;
+              &lt;span className='admin-stat-note'&gt;{t.note}&lt;/span&gt;
+            &lt;/article&gt;
+          );
+        })}
+      &lt;/div&gt;
+
+      &lt;div className='admin-bloc'&gt;
+        &lt;h2&gt;Ventes des 7 derniers jours&lt;/h2&gt;
+        &lt;p className='admin-stat-note'&gt;Toutes les commandes sauf les annulées, en DA.&lt;/p&gt;
+        {/* ResponsiveContainer : le graphique prend toute la largeur disponible */}
+        &lt;div className='admin-graphique'&gt;
+          &lt;ResponsiveContainer width='100%' height={260}&gt;
+            &lt;BarChart data={stats.ventes7jours}&gt;
+              &lt;CartesianGrid strokeDasharray='3 3' vertical={false} /&gt;
+              &lt;XAxis dataKey='jour' /&gt;
+              &lt;YAxis width={70} /&gt;
+              &lt;Tooltip formatter={(valeur) =&gt; prix(valeur)} /&gt;
+              &lt;Bar dataKey='ventes' name='Ventes' fill='#0d6efd' radius={[6, 6, 0, 0]} /&gt;
+            &lt;/BarChart&gt;
+          &lt;/ResponsiveContainer&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div className='admin-deux-colonnes'&gt;
+        &lt;div className='admin-bloc'&gt;
+          &lt;h2&gt;Commandes par statut&lt;/h2&gt;
+          {Object.entries(stats.statuts).map(function ([statut, nombre]) {
+            return (
+              &lt;div key={statut} className='admin-ligne'&gt;
+                &lt;span&gt;{statut}&lt;/span&gt;
+                &lt;strong&gt;{nombre}&lt;/strong&gt;
+              &lt;/div&gt;
+            );
+          })}
+        &lt;/div&gt;
+
+        &lt;div className='admin-bloc'&gt;
+          &lt;h2&gt;Stock à surveiller&lt;/h2&gt;
+          {stats.stockFaible.length === 0 &amp;&amp; &lt;p className='admin-stat-note'&gt;Tous les produits ont au moins 5 unités.&lt;/p&gt;}
+          {stats.stockFaible.map(function (p) {
+            return (
+              &lt;div key={p._id} className='admin-ligne'&gt;
+                &lt;span&gt;{p.name}&lt;/span&gt;
+                &lt;span className='admin-stock admin-stock-low'&gt;{p.stock} restant(s)&lt;/span&gt;
+              &lt;/div&gt;
+            );
+          })}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/&gt;
+  );
+}</pre>
+<div class="box tip"><b class="t">💡 Comment marche le graphique ?</b>
+L'API envoie un tableau de 7 cases : <code>[{ jour: '27/09', ventes: 0 }, ..., { jour: '03/10', ventes: 10000 }]</code>. Recharts dessine une barre par case : <code>dataKey='jour'</code> en bas, <code>dataKey='ventes'</code> pour la hauteur.</div>
+<div class="fichier">reacconter/src/admin/AdminProduits.jsx</div>
+<pre>import { useEffect, useState } from 'react';
+import api from '../api/axios';
+import { imageProduit, prix } from '../outils.js';
+
+const VIDE = { name: '', title: '', description: '', category: '', price: '', stock: '', image: '' };
+
+export default function AdminProduits() {
+  const [produits, setProduits] = useState([]);
+  const [form, setForm] = useState(VIDE);
+  const [enEdition, setEnEdition] = useState(null);   // _id du produit modifié, ou null
+  const [photo, setPhoto] = useState(null);           // le fichier choisi sur l'ordinateur
+  const [envoi, setEnvoi] = useState(false);
+  const [message, setMessage] = useState('');
+  const [erreur, setErreur] = useState('');
+
+  function charger() {
+    api.get('/products').then(function (reponse) { setProduits(reponse.data); });
+  }
+
+  useEffect(charger, []);
+
+  function changer(event) {
+    setForm({ ...form, [event.target.name]: event.target.value });
+  }
+
+  function modifier(produit) {
+    setEnEdition(produit._id);
+    setForm({
+      name: produit.name, title: produit.title || '', description: produit.description || '',
+      category: produit.category || '', price: produit.price, stock: produit.stock, image: produit.image || ''
+    });
+    setPhoto(null);
+    setMessage('');
+    setErreur('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function annuler() {
+    setEnEdition(null);
+    setForm(VIDE);
+    setPhoto(null);
+  }
+
+  async function enregistrer(event) {
+    event.preventDefault();
+    setEnvoi(true);
+    setMessage('');
+    setErreur('');
+
+    try {
+      let image = form.image;
+
+      // 1) S'il y a une photo choisie, on l'envoie d'abord : l'API répond avec son adresse.
+      if (photo) {
+        const donnees = new FormData();
+        donnees.append('image', photo);
+        const reponse = await api.post('/upload', donnees);
+        image = reponse.data.imageUrl;
+      }
+
+      // 2) Puis on enregistre le produit avec cette adresse.
+      const produit = { ...form, image, price: Number(form.price), stock: Number(form.stock || 0) };
+      if (enEdition) {
+        await api.put('/products/' + enEdition, produit);
+        setMessage('Produit modifié ✅');
+      } else {
+        await api.post('/products', produit);
+        setMessage('Produit ajouté ✅');
+      }
+
+      annuler();
+      event.target.reset();
+      charger();
+    } catch (error) {
+      setErreur(error?.response?.data?.message || 'Enregistrement impossible');
+    }
+
+    setEnvoi(false);
+  }
+
+  async function supprimer(produit) {
+    if (!window.confirm('Supprimer « ' + produit.name + ' » ?')) return;
+    try {
+      await api.delete('/products/' + produit._id);
+      charger();
+    } catch (error) {
+      setErreur(error?.response?.data?.message || 'Suppression impossible');
+    }
+  }
+
+  return (
+    &lt;div className='admin-deux-colonnes admin-produits'&gt;
+      &lt;form className='admin-bloc admin-form' onSubmit={enregistrer}&gt;
+        &lt;h2&gt;{enEdition ? 'Modifier le produit' : 'Ajouter un produit'}&lt;/h2&gt;
+
+        &lt;label&gt;Nom *&lt;input name='name' value={form.name} onChange={changer} required /&gt;&lt;/label&gt;
+        &lt;label&gt;Sous-titre&lt;input name='title' value={form.title} onChange={changer} /&gt;&lt;/label&gt;
+        &lt;label&gt;Catégorie&lt;input name='category' value={form.category} onChange={changer} placeholder='Audio, Téléphones...' /&gt;&lt;/label&gt;
+        &lt;div className='admin-form-ligne'&gt;
+          &lt;label&gt;Prix (DA) *&lt;input name='price' type='number' min='0' value={form.price} onChange={changer} required /&gt;&lt;/label&gt;
+          &lt;label&gt;Stock *&lt;input name='stock' type='number' min='0' value={form.stock} onChange={changer} required /&gt;&lt;/label&gt;
+        &lt;/div&gt;
+        &lt;label&gt;Description&lt;textarea name='description' rows='3' value={form.description} onChange={changer} /&gt;&lt;/label&gt;
+        &lt;label&gt;
+          Photo (3 Mo maximum)
+          &lt;input type='file' accept='image/*' onChange={(event) =&gt; setPhoto(event.target.files[0] || null)} /&gt;
+        &lt;/label&gt;
+        {enEdition &amp;&amp; form.image &amp;&amp; !photo &amp;&amp; (
+          &lt;p className='admin-stat-note'&gt;Sans nouvelle photo, l'ancienne est gardée.&lt;/p&gt;
+        )}
+
+        {message &amp;&amp; &lt;p className='admin-ok'&gt;{message}&lt;/p&gt;}
+        {erreur &amp;&amp; &lt;p className='page-erreur'&gt;{erreur}&lt;/p&gt;}
+
+        &lt;button type='submit' className='order-submit-btn' disabled={envoi}&gt;
+          {envoi ? 'Enregistrement...' : enEdition ? 'Enregistrer les modifications' : '+ Ajouter le produit'}
+        &lt;/button&gt;
+        {enEdition &amp;&amp; &lt;button type='button' className='admin-lien' onClick={annuler}&gt;Annuler la modification&lt;/button&gt;}
+      &lt;/form&gt;
+
+      &lt;div className='admin-bloc'&gt;
+        &lt;h2&gt;Catalogue ({produits.length})&lt;/h2&gt;
+        {produits.map(function (p) {
+          return (
+            &lt;div key={p._id} className='admin-produit-ligne'&gt;
+              &lt;img src={imageProduit(p.image)} alt='' /&gt;
+              &lt;div&gt;
+                &lt;strong&gt;{p.name}&lt;/strong&gt;
+                &lt;span&gt;{prix(p.price)} · stock {p.stock}&lt;/span&gt;
+              &lt;/div&gt;
+              &lt;button type='button' className='admin-lien' onClick={() =&gt; modifier(p)}&gt;Modifier&lt;/button&gt;
+              &lt;button type='button' className='admin-lien rouge' onClick={() =&gt; supprimer(p)}&gt;Supprimer&lt;/button&gt;
+            &lt;/div&gt;
+          );
+        })}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+<div class="box tip"><b class="t">💡 Ajouter un produit avec photo = 2 envois</b>
+1) La photo part seule vers <code>/api/upload</code> (dans un <code>FormData</code>, l'enveloppe des fichiers). L'API répond avec <b>l'adresse</b> de la photo. 2) Le produit part vers <code>/api/products</code> avec cette adresse dans <code>image</code>.</div>
+<div class="fichier">reacconter/src/admin/AdminCommandes.jsx</div>
+<pre>import { useEffect, useState } from 'react';
+import api from '../api/axios';
+import { prix, dateFr } from '../outils.js';
+
+const STATUTS = ['En attente', 'Expédiée', 'Livrée', 'Annulée'];
+
+export default function AdminCommandes() {
+  const [commandes, setCommandes] = useState([]);
+  const [erreur, setErreur] = useState('');
+
+  function charger() {
+    api.get('/orders')
+      .then(function (reponse) { setCommandes(reponse.data); })
+      .catch(function (error) { setErreur(error?.response?.data?.message || 'Commandes indisponibles'); });
+  }
+
+  useEffect(charger, []);
+
+  async function changerStatut(commande, statut) {
+    if (statut === 'Annulée' &amp;&amp; !window.confirm('Annuler cette commande ? Le stock sera remis et elle ne pourra plus changer.')) {
+      return;
+    }
+    try {
+      await api.patch('/orders/' + commande._id + '/statut', { statut });
+      setErreur('');
+      charger();
+    } catch (error) {
+      setErreur(error?.response?.data?.message || 'Changement impossible');
+    }
+  }
+
+  return (
+    &lt;div className='admin-bloc'&gt;
+      &lt;h2&gt;Commandes ({commandes.length})&lt;/h2&gt;
+      {erreur &amp;&amp; &lt;p className='page-erreur'&gt;{erreur}&lt;/p&gt;}
+      {commandes.length === 0 &amp;&amp; &lt;p className='admin-stat-note'&gt;Aucune commande pour le moment.&lt;/p&gt;}
+
+      &lt;div className='admin-table-wrapper'&gt;
+        &lt;table className='admin-table'&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;Date&lt;/th&gt;
+              &lt;th&gt;Client&lt;/th&gt;
+              &lt;th&gt;Livraison&lt;/th&gt;
+              &lt;th&gt;Articles&lt;/th&gt;
+              &lt;th&gt;Total&lt;/th&gt;
+              &lt;th&gt;Statut&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            {commandes.map(function (c) {
+              return (
+                &lt;tr key={c._id}&gt;
+                  &lt;td&gt;{dateFr(c.createdAt)}&lt;/td&gt;
+                  &lt;td&gt;
+                    &lt;strong&gt;{c.prenom} {c.nom}&lt;/strong&gt;&lt;br /&gt;
+                    &lt;small&gt;{c.telephone}&lt;/small&gt;
+                  &lt;/td&gt;
+                  &lt;td&gt;{c.wilaya}&lt;br /&gt;&lt;small&gt;{c.adresse}&lt;/small&gt;&lt;/td&gt;
+                  &lt;td&gt;
+                    {c.items.map(function (ligne, i) {
+                      return &lt;div key={i}&gt;{ligne.name} × {ligne.quantity}&lt;/div&gt;;
+                    })}
+                  &lt;/td&gt;
+                  &lt;td&gt;&lt;strong&gt;{prix(c.total)}&lt;/strong&gt;&lt;/td&gt;
+                  &lt;td&gt;
+                    {/* Une commande annulée est verrouillée (l'API refuse aussi de la changer) */}
+                    &lt;select
+                      value={c.statut}
+                      disabled={c.statut === 'Annulée'}
+                      onChange={(event) =&gt; changerStatut(c, event.target.value)}
+                    &gt;
+                      {STATUTS.map(function (s) { return &lt;option key={s} value={s}&gt;{s}&lt;/option&gt;; })}
+                    &lt;/select&gt;
+                  &lt;/td&gt;
+                &lt;/tr&gt;
+              );
+            })}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+<div class="fichier">reacconter/src/admin/AdminUtilisateurs.jsx</div>
+<pre>import { useEffect, useState } from 'react';
+import api from '../api/axios';
+import { dateFr } from '../outils.js';
+import { useAuth } from '../AuthContext.jsx';
+
+export default function AdminUtilisateurs() {
+  const { user } = useAuth();
+  const [comptes, setComptes] = useState([]);
+  const [erreur, setErreur] = useState('');
+
+  function charger() {
+    api.get('/admin/users')
+      .then(function (reponse) { setComptes(reponse.data); })
+      .catch(function (error) { setErreur(error?.response?.data?.message || 'Comptes indisponibles'); });
+  }
+
+  useEffect(charger, []);
+
+  async function changerRole(compte, role) {
+    try {
+      await api.patch('/admin/users/' + compte._id + '/role', { role });
+      setErreur('');
+      charger();
+    } catch (error) {
+      setErreur(error?.response?.data?.message || 'Changement impossible');
+    }
+  }
+
+  return (
+    &lt;div className='admin-bloc'&gt;
+      &lt;h2&gt;Comptes ({comptes.length})&lt;/h2&gt;
+      {erreur &amp;&amp; &lt;p className='page-erreur'&gt;{erreur}&lt;/p&gt;}
+
+      &lt;div className='admin-table-wrapper'&gt;
+        &lt;table className='admin-table'&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;Nom&lt;/th&gt;
+              &lt;th&gt;Email&lt;/th&gt;
+              &lt;th&gt;Inscrit le&lt;/th&gt;
+              &lt;th&gt;Rôle&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            {comptes.map(function (c) {
+              const moi = c._id === user?.id;
+              return (
+                &lt;tr key={c._id}&gt;
+                  &lt;td&gt;&lt;strong&gt;{c.nom}&lt;/strong&gt;{moi &amp;&amp; ' (toi)'}&lt;/td&gt;
+                  &lt;td&gt;{c.email}&lt;/td&gt;
+                  &lt;td&gt;{dateFr(c.createdAt)}&lt;/td&gt;
+                  &lt;td&gt;
+                    {/* Garde-fou : on ne change pas son propre rôle (l'API le refuse aussi) */}
+                    &lt;select value={c.role} disabled={moi} onChange={(event) =&gt; changerRole(c, event.target.value)}&gt;
+                      &lt;option value='client'&gt;Client&lt;/option&gt;
+                      &lt;option value='admin'&gt;Admin&lt;/option&gt;
+                    &lt;/select&gt;
+                  &lt;/td&gt;
+                &lt;/tr&gt;
+              );
+            })}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+<div class="fichier">reacconter/src/admin/AdminPage.jsx</div>
+<pre>import { useState } from 'react';
+import AdminStats from './AdminStats.jsx';
+import AdminProduits from './AdminProduits.jsx';
+import AdminCommandes from './AdminCommandes.jsx';
+import AdminUtilisateurs from './AdminUtilisateurs.jsx';
+import '../admin-page.css';
+import './admin.css';
+
+// Les 4 onglets de l'espace admin
+const ONGLETS = [
+  { id: 'stats', titre: '📊 Tableau de bord' },
+  { id: 'produits', titre: '📦 Produits' },
+  { id: 'commandes', titre: '🧾 Commandes' },
+  { id: 'comptes', titre: '👥 Comptes' }
+];
+
+function AdminPage() {
+  const [onglet, setOnglet] = useState('stats');
+
+  return (
+    &lt;section className='admin-page'&gt;
+      &lt;div className='admin-header'&gt;
+        &lt;div&gt;
+          &lt;p className='admin-eyebrow'&gt;Espace administration&lt;/p&gt;
+          &lt;h1&gt;DZShop Admin&lt;/h1&gt;
+          &lt;p className='admin-intro'&gt;Gère ta boutique : produits, commandes, comptes et chiffres.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;span className='admin-status'&gt;Boutique en ligne&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div className='admin-onglets'&gt;
+        {ONGLETS.map(function (o) {
+          return (
+            &lt;button
+              key={o.id}
+              type='button'
+              className={'admin-onglet' + (onglet === o.id ? ' actif' : '')}
+              onClick={() =&gt; setOnglet(o.id)}
+            &gt;
+              {o.titre}
+            &lt;/button&gt;
+          );
+        })}
+      &lt;/div&gt;
+
+      {onglet === 'stats' &amp;&amp; &lt;AdminStats /&gt;}
+      {onglet === 'produits' &amp;&amp; &lt;AdminProduits /&gt;}
+      {onglet === 'commandes' &amp;&amp; &lt;AdminCommandes /&gt;}
+      {onglet === 'comptes' &amp;&amp; &lt;AdminUtilisateurs /&gt;}
+    &lt;/section&gt;
+  );
+}
+
+export default AdminPage;</pre>
+
+<h3>4.1 — <code>App.jsx</code> et le ménage</h3>
+<p>Enfin, <code>App.jsx</code> branche toutes les pages, avec les vigiles : <code>/checkout</code> et <code>/mes-commandes</code> demandent d'être connectée, <code>/admin</code> demande d'être admin. <b>Ouvre</b> <code>reacconter/src/App.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code> :</p>
+<div class="fichier">reacconter/src/App.jsx</div>
+<pre>import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import Navbar from './navbar.jsx';
+import './navbar.css';
+import './App.css';
+import Footer from './footer.jsx';
+import './footer.css';
+import Dashbored from './dashbored.jsx';
+import Produits from './produits.jsx';
+import ProductDetails from './produitsinfo.jsx';
+import CartPage from './CartPage.jsx';
+import CheckoutPage from './CheckoutPage.jsx';
+import AuthPage from './user-page.jsx';
+import MesCommandes from './MesCommandes.jsx';
+import AdminPage from './admin/AdminPage.jsx';
+import PrivateRoute from './PrivateRoute.jsx';
+import './produits.css';
+import './boutique.css';
+
+// Au démarrage, on relit le panier sauvegardé dans le navigateur :
+// un F5 ne doit plus vider le panier.
+function lirePanierDepuisStockage() {
+  try {
+    const sauvegarde = localStorage.getItem('panier');
+    const panier = sauvegarde ? JSON.parse(sauvegarde) : [];
+    return Array.isArray(panier) ? panier : [];
+  } catch {
+    return [];
+  }
+}
+
+function App() {
+  const [cartItems, setCartItems] = useState(lirePanierDepuisStockage);
+
+  // À chaque changement du panier, on le sauvegarde dans le navigateur.
+  useEffect(function () {
+    localStorage.setItem('panier', JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  const addToCart = (product) =&gt; {
+    setCartItems((currentCart) =&gt; {
+      const existingItem = currentCart.find((item) =&gt; item._id === product._id);
+
+      if (existingItem) {
+        return currentCart.map((item) =&gt;
+          item._id === product._id
+            ? { ...item, quantity: Math.min(item.quantity + 1, 99) }
+            : item
+        );
+      }
+
+      return [...currentCart, { _id: product._id, name: product.name, price: product.price, image: product.image, quantity: 1 }];
+    });
+  };
+
+  const increaseQuantity = (productId) =&gt; {
+    setCartItems((currentCart) =&gt;
+      currentCart.map((item) =&gt;
+        item._id === productId ? { ...item, quantity: Math.min(item.quantity + 1, 99) } : item
+      )
+    );
+  };
+
+  const decreaseQuantity = (productId) =&gt; {
+    setCartItems((currentCart) =&gt;
+      currentCart
+        .map((item) =&gt;
+          item._id === productId ? { ...item, quantity: item.quantity - 1 } : item
+        )
+        .filter((item) =&gt; item.quantity &gt; 0)
+    );
+  };
+
+  const removeFromCart = (productId) =&gt; {
+    setCartItems((currentCart) =&gt;
+      currentCart.filter((item) =&gt; item._id !== productId)
+    );
+  };
+
+  const clearCart = () =&gt; {
+    setCartItems([]);
+  };
+
+  const pagePanier = (
+    &lt;CartPage
+      items={cartItems}
+      increaseQuantity={increaseQuantity}
+      decreaseQuantity={decreaseQuantity}
+      removeFromCart={removeFromCart}
+    /&gt;
+  );
+
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Navbar cartCount={cartItems.reduce((sum, item) =&gt; sum + item.quantity, 0)} /&gt;
+
+      &lt;main className='content'&gt;
+        &lt;Routes&gt;
+          &lt;Route path='/' element={&lt;Dashbored addToCart={addToCart} /&gt;} /&gt;
+          &lt;Route path='/produits' element={&lt;Produits /&gt;} /&gt;
+          &lt;Route path='/produits/:id' element={&lt;ProductDetails addToCart={addToCart} /&gt;} /&gt;
+          &lt;Route path='/panier' element={pagePanier} /&gt;
+          &lt;Route path='/cart' element={pagePanier} /&gt;
+          &lt;Route
+            path='/checkout'
+            element={
+              &lt;PrivateRoute&gt;
+                &lt;CheckoutPage cartItems={cartItems} clearCart={clearCart} /&gt;
+              &lt;/PrivateRoute&gt;
+            }
+          /&gt;
+          &lt;Route path='/connexion' element={&lt;AuthPage /&gt;} /&gt;
+          &lt;Route
+            path='/mes-commandes'
+            element={
+              &lt;PrivateRoute&gt;
+                &lt;MesCommandes /&gt;
+              &lt;/PrivateRoute&gt;
+            }
+          /&gt;
+          &lt;Route
+            path='/admin'
+            element={
+              &lt;PrivateRoute admin&gt;
+                &lt;AdminPage /&gt;
+              &lt;/PrivateRoute&gt;
+            }
+          /&gt;
+          &lt;Route path='*' element={&lt;div className='not-found'&gt;&lt;h2&gt;Page introuvable&lt;/h2&gt;&lt;/div&gt;} /&gt;
+        &lt;/Routes&gt;
+      &lt;/main&gt;
+
+      &lt;Footer /&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;</pre>
+<p>Les 3 anciens fichiers ne servent plus à rien (l'ancien admin et ses fausses données, et un vieux formulaire jamais utilisé). On les supprime :</p>
+<div class="fichier terminal">Terminal</div>
+<pre>git rm -q reacconter/src/AdminPage.jsx reacconter/src/order-form.jsx reacconter/src/produits-data.js</pre>
+
+<div class="box ok"><b class="t">✅ Lancer le site</b>
+<div class="fichier terminal">Terminal</div>
+<pre>cd reacconter
+npm run dev</pre>
+<p style="margin:0">Ouvre <code>http://localhost:5173</code>. L'accueil montre 3 produits vedettes <b>avec leurs photos</b>, et le menu affiche « Connexion ». Si la page est blanche : <b>F12 → Console</b>, et envoie-moi le message rouge.</p></div>
+
+<!-- ============ 5 ============ -->
+<h2><span class="etape">5</span>Devenir admin et tout tester sur ton PC</h2>
+<h3>5.1 — Ton compte admin</h3>
+<ol>
+<li>Sur le site, <b>Connexion → Inscription</b> : crée ton compte avec ton vrai email. (Si tu as déjà un compte, utilise-le.)</li>
+<li>Dans un <b>troisième terminal</b> (icône <b>+</b>), à la racine du projet, remplace l'email par le tien :</li>
+</ol>
+<div class="fichier terminal">Terminal</div>
+<pre>cd backend
+node makeAdmin.js ton-email@exemple.com
+cd ..</pre>
+<p>Tu dois lire <code>✅ ... est maintenant admin</code>. Sur le site : <b>Déconnexion</b>, puis reconnecte-toi. Tu arrives directement sur l'espace admin, et le bouton <b>Admin</b> apparaît dans le menu.</p>
+<div class="box warn"><b class="t">⚠️ Ne relance plus <code>npm run seed</code></b>
+Ton script <code>seed.js</code> <b>efface tous les produits</b> avant de remettre les 6 produits « Rode ». Maintenant que tu ajoutes tes produits depuis l'espace admin, le relancer les supprimerait.</div>
+
+<h3>5.2 — La checklist sur ton PC</h3>
+<div class="box ok"><b class="t">✅ Coche tout avant de continuer</b>
+<ul style="list-style:none;margin-left:0">
+<li>☐ <b>Admin → Produits</b> : ajoute un produit <b>avec une photo</b> de ton ordinateur → il apparaît avec sa photo</li>
+<li>☐ <b>Modifier</b> son prix → le nouveau prix s'affiche, la photo est gardée</li>
+<li>☐ Déconnexion → crée un <b>deuxième compte</b> (client) → le bouton Admin n'apparaît pas ; en tapant <code>localhost:5173/admin</code>, tu es renvoyée à l'accueil</li>
+<li>☐ Ajoute 2 produits au panier → <b>F5</b> → le panier est toujours là, les prix sont en DA</li>
+<li>☐ Commande avec un mauvais téléphone (<code>12345</code>) → message « Numéro de téléphone invalide »</li>
+<li>☐ Commande correcte → « Commande confirmée » avec le total → <b>Suivre ma commande</b> → elle est « En attente »</li>
+<li>☐ Reconnecte-toi en admin → <b>Commandes</b> → passe-la en « Expédiée » → côté client, « Mes commandes » affiche « Expédiée »</li>
+<li>☐ Passe une commande en <b>Annulée</b> → le stock du produit remonte, et la commande ne peut plus changer</li>
+<li>☐ <b>Tableau de bord</b> : la barre d'<b>aujourd'hui</b> montre tes ventes du jour</li>
+<li>☐ <b>Comptes</b> : ton propre rôle est grisé (impossible de te retirer l'admin)</li>
+</ul></div>
+
+<!-- ============ 6 ============ -->
+<h2><span class="etape">6</span>Envoyer sur GitHub</h2>
+<p>Un dernier fichier, <b>à la racine du projet</b> (clic droit dans le vide sous les dossiers → New File → <code>netlify.toml</code>). Il donne à Netlify tous ses réglages : tu n'auras aucune case à remplir à la main.</p>
+<div class="fichier">netlify.toml</div>
+<pre># Réglages lus automatiquement par Netlify : rien à taper à la main.
+[build]
+  base = "reacconter"
+  command = "npm run build"
+  publish = "dist"
+
+# Vite 8 a besoin de Node 20.19 minimum
+[build.environment]
+  NODE_VERSION = "22"</pre>
+<p>On vérifie que le site se construit, exactement comme le fera Netlify :</p>
+<div class="fichier terminal">Terminal</div>
+<pre>cd reacconter
+npm run build
+cd ..</pre>
+<p>La dernière ligne doit dire <code>✓ built in ...</code>. Un avertissement jaune « chunks are larger than 500 kB » est normal (c'est Recharts) ; seule une erreur <b>rouge</b> doit t'arrêter : dans ce cas, envoie-la-moi.</p>
+<div class="fichier terminal">Terminal</div>
+<pre>git add .
+git commit -m "DZShop complet : securite, commandes, espace admin, photos"
+git push origin master</pre>
+<div class="box warn"><b class="t">⚠️ Vérifie sur GitHub (github.com/KERBOUCHEsafa/reactconter, branche <code>master</code>)</b>
+Tu dois voir <code>netlify.toml</code>, <code>backend/routes/orders.js</code> et <code>reacconter/src/admin/</code>. Tu ne dois voir <b>aucun</b> fichier <code>.env</code>, seulement les deux <code>.env.example</code>. Si un <code>.env</code> apparaît : <b>arrête-toi et préviens-moi</b>.</div>
+
+<!-- ============ 7 ============ -->
+<h2><span class="etape">7</span>📸 Cloudinary : les photos en ligne</h2>
+<p>Render efface son disque à chaque redémarrage. Une photo rangée là-bas disparaîtrait en quelques heures. Cloudinary garde tes photos gratuitement.</p>
+<ol>
+<li><b>cloudinary.com</b> → <b>Sign up for free</b>.</li>
+<li>Va dans <b>Settings</b> (roue dentée, en bas à gauche) → <b>API Keys</b>. Tu y vois ton <b>Cloud name</b> (en haut de la page), ton <b>API Key</b> et ton <b>API Secret</b> (clique sur l'œil 👁 pour l'afficher).</li>
+<li>Fabrique ta ligne dans le bloc-notes, au format suivant :</li>
+</ol>
+<pre class="nocopy">cloudinary://API_KEY:API_SECRET@CLOUD_NAME</pre>
+<p>Exemple (faux) : <code>cloudinary://123456789012345:AbCdEfGhIjKlMnOpQrStUvWxYz0@dxyz1234</code></p>
+<div class="box err"><b class="t">🚨 L'erreur la plus fréquente (déjà vue chez une autre élève aujourd'hui)</b>
+Cloudinary montre parfois un modèle du genre <code>cloudinary://&lt;your_api_key&gt;:&lt;your_api_secret&gt;@dxyz1234</code>. Il faut remplacer <b>tout</b> le morceau, <b>y compris les signes <code>&lt;</code> et <code>&gt;</code></b>. Sinon chaque envoi de photo échoue avec <code>Unknown API key</code>.</div>
+<p><b>4.</b> Mets cette ligne dans <code>backend/.env</code> : <code>CLOUDINARY_URL=cloudinary://...</code>. Arrête l'API (<code>Ctrl + C</code> dans son terminal), relance <code>npm run dev</code>, puis ajoute un produit avec photo dans l'admin. <b>Clic droit sur sa photo → Ouvrir l'image dans un nouvel onglet</b> : l'adresse doit commencer par <code>https://res.cloudinary.com/</code>. Si un message « Cloudinary : ... » s'affiche, voir l'étape 10.</p>
+
+<!-- ============ 8 ============ -->
+<h2><span class="etape">8</span>🚀 La mise en ligne</h2>
+<table>
+<tr><th>Morceau</th><th>Dossier</th><th>Hébergeur</th><th>Adresse</th></tr>
+<tr><td>L'API</td><td><code>backend</code></td><td>Render (déjà créé ✅)</td><td><code>https://reactconter.onrender.com</code></td></tr>
+<tr><td>Le site</td><td><code>reacconter</code></td><td>Netlify (on le refait proprement)</td><td><code>https://dzshop-safaa.netlify.app</code> (ex.)</td></tr>
+</table>
+
+<h3>8.1 — Atlas : accepter Render</h3>
+<ol>
+<li><b>cloud.mongodb.com</b> → <b>Network Access</b> (ou <i>Security → Network Access</i>).</li>
+<li>Si la ligne <code>0.0.0.0/0</code> existe déjà en <b>Active</b> : rien à faire. Sinon : <b>+ Add IP Address</b> → <b>Allow access from anywhere</b> → <b>Confirm</b>.</li>
+</ol>
+
+<h3>8.2 — Render : mettre à jour ton API</h3>
+<p>Ton service Render existe déjà. On vérifie ses réglages et on lui donne les nouvelles variables.</p>
+<ol>
+<li><b>render.com</b> → ton service <b>reactconter</b> → menu <b>Settings</b>. Vérifie :</li>
+</ol>
+<table>
+<tr><th>Réglage</th><th>Valeur</th></tr>
+<tr><td>Branch</td><td><code>master</code></td></tr>
+<tr><td>Root Directory</td><td><code>backend</code></td></tr>
+<tr><td>Build Command</td><td><code>npm install</code></td></tr>
+<tr><td>Start Command</td><td><code>npm start</code></td></tr>
+</table>
+<p><b>2.</b> Menu <b>Environment</b>. Mets <b>exactement</b> ces 5 variables (<b>+ Add Environment Variable</b> pour en ajouter une, l'icône crayon pour en modifier une) :</p>
+<table>
+<tr><th>Key</th><th>Value</th></tr>
+<tr><td><code>MONGO_URI</code></td><td>La même que dans ton <code>backend/.env</code> (avec le <b>nouveau</b> mot de passe)</td></tr>
+<tr><td><code>JWT_SECRET</code></td><td>La longue suite de l'étape 1.2</td></tr>
+<tr><td><code>GOOGLE_CLIENT_ID</code></td><td>Ton identifiant Google</td></tr>
+<tr><td><code>CLOUDINARY_URL</code></td><td>La ligne <code>cloudinary://...</code> de l'étape 7 (sans <code>CLOUDINARY_URL=</code> devant)</td></tr>
+<tr><td><code>FRONTEND_URL</code></td><td>Laisse <code>http://localhost:5173</code> pour l'instant (on la change en 8.4)</td></tr>
+</table>
+<p>S'il reste une variable <code>PORT</code> : <b>supprime-la</b> (Render choisit le port).</p>
+<p><b>3.</b> <b>Save, rebuild, and deploy</b> (ou en haut : <b>Manual Deploy → Deploy latest commit</b>). Dans <b>Logs</b>, attends :</p>
+<pre class="nocopy">Serveur sur http://localhost:10000
+MongoDB connecté
+==> Your service is live 🎉</pre>
+<p><b>4. Test :</b> ouvre <code>https://reactconter.onrender.com</code> → <code>{"message":"API DZShop en ligne"}</code>. Puis <code>https://reactconter.onrender.com/api/products</code> → tes produits.</p>
+<div class="box tip"><b class="t">💡 Render gratuit « s'endort »</b>
+Après 15 minutes sans visite, l'API s'endort. La visite suivante met <b>environ 50 secondes</b>, ensuite c'est rapide. Avant de montrer ton site, ouvre d'abord ton adresse Render pour la réveiller.</div>
+
+<h3>8.3 — Netlify : un site relié à GitHub</h3>
+<p>Ton site actuel (<code>magenta-kelpie-ba9ab7</code>) a été déposé à la main : il ne se met jamais à jour tout seul. C'est pour ça que tu voyais toujours l'erreur <code>localhost:5000</code>. On en crée un nouveau, <b>relié à GitHub</b>.</p>
+<ol>
+<li><b>app.netlify.com</b> → <b>Add new project</b> (ou <i>Add new site</i>) → <b>Import an existing project</b> → <b>GitHub</b> → choisis <code>reactconter</code>.</li>
+<li><b>Branch to deploy : <code>master</code></b> ⚠️ (pas <code>main</code> : <code>main</code> contient ta vieille version de septembre).</li>
+<li>Grâce à <code>netlify.toml</code>, tu dois voir : Base directory <code>reacconter</code>, Build command <code>npm run build</code>, Publish directory <code>reacconter/dist</code>. <b>Functions directory : laisse vide.</b> Ne change rien.</li>
+<li><b>Add environment variables</b> :</li>
+</ol>
+<table>
+<tr><th>Key</th><th>Value</th></tr>
+<tr><td><code>VITE_API_URL</code></td><td><code>https://reactconter.onrender.com</code> (sans <code>/</code> ni <code>/api</code> à la fin)</td></tr>
+<tr><td><code>VITE_GOOGLE_CLIENT_ID</code></td><td>Ton identifiant Google (le même que dans <code>reacconter/.env</code>)</td></tr>
+</table>
+<p><b>5.</b> <b>Deploy</b>. Après 1 à 2 minutes : <b>Published</b>.</p>
+<p><b>6.</b> Un joli nom : <b>Project configuration</b> → <b>Change project name</b> → par exemple <code>dzshop-safaa</code> → <b>Save</b>. Note ton adresse (<code>https://dzshop-safaa.netlify.app</code>).</p>
+<p><b>7.</b> L'ancien site <code>magenta-kelpie-ba9ab7</code> ne sert plus. Tu pourras le supprimer plus tard (Project configuration → tout en bas → <i>Delete project</i>).</p>
+<div class="box warn"><b class="t">⚠️ Une variable <code>VITE_...</code> est « gravée » au moment de la construction</b>
+Si tu changes <code>VITE_API_URL</code> plus tard : <b>Deploys → Trigger deploy → Clear cache and deploy site</b>.</div>
+
+<h3>8.4 — Relier l'API au site, et Google</h3>
+<ol>
+<li><b>Render</b> → <b>Environment</b> → <code>FRONTEND_URL</code> = ton adresse Netlify, par exemple <code>https://dzshop-safaa.netlify.app</code> (<b>https</b>, sans <code>/</code> à la fin) → <b>Save, rebuild, and deploy</b>.</li>
+<li><b>console.cloud.google.com</b> → <b>APIs &amp; Services → Credentials</b> → ton <b>OAuth 2.0 Client ID</b> → <b>Authorized JavaScript origins</b> → <b>+ Add URI</b> → ton adresse Netlify → <b>Save</b>. Garde aussi <code>http://localhost:5173</code>. Google peut mettre de 5 minutes à quelques heures à l'accepter.</li>
+</ol>
+<div class="box tip"><b class="t">💡 Pourquoi <code>FRONTEND_URL</code> ? (CORS)</b>
+C'est la <b>liste des invités</b> de ton API. Seuls les sites écrits là (plus <code>localhost:5173</code> pour tes tests) ont le droit de l'appeler depuis un navigateur. Avant, ton API acceptait <b>tous</b> les sites du monde.</div>
+
+<!-- ============ 9 ============ -->
+<h2><span class="etape">9</span>Le grand test en ligne</h2>
+<p>Ouvre ton adresse Netlify en <b>navigation privée</b> (<code>Ctrl + Maj + N</code>) :</p>
+<div class="box ok"><b class="t">✅ Checklist en ligne</b>
+<ul style="list-style:none;margin-left:0">
+<li>☐ Les produits s'affichent avec leurs photos (la première fois, attends jusqu'à 1 minute : Render se réveille)</li>
+<li>☐ Sur <code>/produits</code>, <b>F5</b> → la page se recharge (pas de « Page not found »)</li>
+<li>☐ F12 → Console : <b>aucune</b> erreur qui parle de <code>localhost:5000</code></li>
+<li>☐ Inscription d'un client → panier → <b>F5</b> → panier toujours là → commande → « Mes commandes »</li>
+<li>☐ Connexion admin → la commande est là → passe-la en « Livrée » → le chiffre d'affaires augmente</li>
+<li>☐ Ajoute un produit avec photo → son adresse commence par <code>https://res.cloudinary.com/</code></li>
+<li>☐ Le bouton Google fonctionne (sinon, attends un peu après l'étape 8.4)</li>
+<li>☐ Ouvre le site sur ton <b>téléphone</b> : le menu tient sur l'écran, tout marche</li>
+</ul></div>
+
+<!-- ============ 10 ============ -->
+<h2><span class="etape">10</span>Si quelque chose ne marche pas</h2>
+<p>Ouvre <b>F12 → Console</b> (site) ou <b>Render → Logs</b> (API), et cherche ton message :</p>
+<table>
+<tr><th>Ce que tu vois</th><th>La cause</th><th>Ce que tu fais</th></tr>
+<tr><td>Le site appelle <code>localhost:5000</code></td><td>Tu regardes l'ancien site (<code>magenta-kelpie</code>), ou <code>VITE_API_URL</code> manque</td><td>Ouvre la <b>nouvelle</b> adresse (8.3) ; sinon ajoute <code>VITE_API_URL</code> → Clear cache and deploy</td></tr>
+<tr><td><code>blocked by CORS policy</code></td><td><code>FRONTEND_URL</code> sur Render n'est pas exactement l'adresse Netlify</td><td>8.4 : <code>https</code>, orthographe → Save, rebuild, and deploy</td></tr>
+<tr><td><b>Page not found</b> après F5</td><td>Netlify ne publie pas le bon dossier</td><td>Vérifie que <code>netlify.toml</code> est sur GitHub (étape 6), puis Clear cache and deploy</td></tr>
+<tr><td>Dans l'admin : <code>Cloudinary : Unknown API key</code></td><td>Le modèle avec <code>&lt;your_api_key&gt;</code> est resté</td><td>Étape 7 : refais la ligne avec les vraies valeurs, sans <code>&lt;</code> <code>&gt;</code></td></tr>
+<tr><td>Dans l'admin : <code>Cloudinary : Invalid Signature</code></td><td>API Key ou API Secret mal recopié</td><td>Recopie-les depuis Cloudinary → Settings → API Keys (l'œil 👁)</td></tr>
+<tr><td>Dans l'admin : <code>Photo trop lourde (3 Mo maximum)</code></td><td>La photo dépasse 3 Mo</td><td>Prends une photo plus petite (ou fais une capture d'écran de la photo)</td></tr>
+<tr><td>Render : <code>JWT_SECRET manquant</code></td><td>Variable oubliée sur Render</td><td>8.2 : ajoute <code>JWT_SECRET</code></td></tr>
+<tr><td>Render : <code>Erreur MongoDB : bad auth</code></td><td>Ancien mot de passe dans <code>MONGO_URI</code></td><td>Recopie <code>MONGO_URI</code> depuis ton <code>backend/.env</code> qui marche</td></tr>
+<tr><td>Plus aucun produit après avoir changé <code>MONGO_URI</code></td><td>Le nom de la base (<code>/dzshop</code>) a changé</td><td>Étape 1.3 : remets ton adresse avec le même nom de base qu'avant (ou rien entre <code>.net/</code> et <code>?</code>)</td></tr>
+<tr><td><code>Identifiants incorrects</code> avec ton compte admin en ligne</td><td>Tu es sur la même base, mais tu t'es inscrite avec un autre email</td><td>Refais <code>node makeAdmin.js ton-email</code> (sur ton PC, il modifie la même base Atlas)</td></tr>
+<tr><td>Netlify : <code>Build failed</code></td><td>Même problème qu'en local</td><td>Lance <code>npm run build</code> (étape 6) et envoie-moi l'erreur rouge</td></tr>
+<tr><td>Google : <code>The given origin is not allowed</code></td><td>Adresse Netlify pas encore acceptée</td><td>8.4, puis patiente</td></tr>
+</table>
+
+<div class="box warn"><b class="t">ℹ️ Ce que je n'ai pas pu tester à ta place</b>
+J'ai testé tout le code de ce guide sur une copie de ton projet : l'API (63 tests, à l'heure d'Alger et à l'heure de Render) et le site dans Chrome (33 tests, ordinateur et téléphone). Mais je n'ai pas accès à tes comptes Atlas, Render, Netlify, Google et Cloudinary, et leurs boutons changent parfois de nom. Si un écran ne ressemble pas à ce qui est écrit, ou au moindre message d'erreur : <b>capture d'écran ou copier-coller du message</b>, et envoie-le-moi.</div>
+
+<h2>🔁 Après la mise en ligne</h2>
+<ul>
+<li>Chaque <code>git push origin master</code> met <b>automatiquement</b> à jour Render et Netlify (2 à 4 minutes).</li>
+<li>Toujours dans cet ordre : modifier sur ton PC → tester en local → <code>npm run build</code> → <code>git push origin master</code>.</li>
+<li>Après avoir changé une variable sur Render ou Netlify, il faut reconstruire (Render : <i>Save, rebuild, and deploy</i> ; Netlify : <i>Clear cache and deploy site</i>).</li>
+</ul>
+
+<div class="box tip"><b class="t">🏁 Safaa</b>
+Quand la checklist de l'étape 9 est toute cochée, ton DZShop est au niveau du projet d'Amel, et <b>en ligne</b> : comptes sécurisés, connexion Google, vraies commandes au prix du serveur, stock, statuts, espace admin avec graphique, photos sur Cloudinary, panier qui reste et suivi des commandes. Envoie-moi ton adresse Netlify, je passerai faire une commande test 😉👏</div>
+
+</div>
+
+<script>
+(function () {
+  var pres = document.querySelectorAll('pre');
+  for (var i = 0; i < pres.length; i++) {
+    (function (pre) {
+      if (pre.classList.contains('nocopy')) return;
+      var texte = pre.textContent;
+      var bouton = document.createElement('button');
+      bouton.className = 'copier';
+      bouton.type = 'button';
+      bouton.textContent = '📋 Copier';
+      bouton.onclick = function () {
+        function ok() {
+          bouton.textContent = '✅ Copié !';
+          bouton.classList.add('fait');
+          setTimeout(function () { bouton.textContent = '📋 Copier'; bouton.classList.remove('fait'); }, 2000);
+        }
+        function secours() {
+          var zone = document.createElement('textarea');
+          zone.value = texte;
+          zone.style.position = 'fixed';
+          zone.style.opacity = '0';
+          document.body.appendChild(zone);
+          zone.select();
+          try { document.execCommand('copy'); ok(); } catch (e) { bouton.textContent = 'Sélectionne + Ctrl+C'; }
+          document.body.removeChild(zone);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(texte).then(ok, secours);
+        } else {
+          secours();
+        }
+      };
+      pre.appendChild(bouton);
+    })(pres[i]);
+  }
+})();
+</script>
+
+</body>
+</html>

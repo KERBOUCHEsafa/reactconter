@@ -3,9 +3,15 @@ import bcrypt from 'bcryptjs'
 
 const schema = new mongoose.Schema({
   nom:      { type: String, required: true },
-  email:    { type: String, required: true, unique: true },
+  // L'email est mis en minuscules À L'INSCRIPTION (routes/auth.js).
+  // Pas d'option "lowercase" ici : elle empêcherait de retrouver les anciens comptes
+  // créés avec des majuscules (Mongoose l'appliquerait aussi aux recherches).
+  email:    { type: String, required: true, unique: true, trim: true },
   password: { type: String, required: true },
-  role:     { type: String, default: 'client' }
+  // Seulement deux rôles possibles : n'importe quelle autre valeur est refusée.
+  role:     { type: String, enum: ['client', 'admin'], default: 'client' }
+}, {
+  timestamps: true
 })
 
 // AVANT chaque sauvegarde : on brouille le mot de passe.

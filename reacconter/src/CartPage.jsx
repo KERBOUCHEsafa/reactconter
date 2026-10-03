@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import './produits-cart.css';
 
+const FRAIS_LIVRAISON = 500;
+const LIVRAISON_GRATUITE_DES = 10000;
+
 function CartItem({
   item,
   increaseQuantity,
@@ -13,7 +16,7 @@ function CartItem({
 
       <div className='cart-item-info'>
         <h3>{item.name}</h3>
-        <p>${Number(item.price).toFixed(2)}</p>
+        <p>{Number(item.price).toLocaleString('fr-FR')} DA</p>
 
         <div className='quantity'>
           <button onClick={() => decreaseQuantity(item._id)} aria-label='Decrease quantity'>−</button>
@@ -23,7 +26,7 @@ function CartItem({
       </div>
 
       <div className='cart-item-right'>
-        <strong>${(Number(item.price) * item.quantity).toFixed(2)}</strong>
+        <strong>{(Number(item.price) * item.quantity).toLocaleString('fr-FR')} DA</strong>
         <button className='remove-btn' onClick={() => removeFromCart(item._id)} aria-label='Remove item'>🗑️</button>
       </div>
     </div>
@@ -33,6 +36,8 @@ function CartItem({
 function CartPage({ items, increaseQuantity, decreaseQuantity, removeFromCart }) {
   const navigate = useNavigate();
   const subtotal = items.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
+  const livraison = subtotal >= LIVRAISON_GRATUITE_DES ? 0 : FRAIS_LIVRAISON;
+  const total = subtotal + livraison;
 
   if (!items.length) {
     return (
@@ -69,15 +74,15 @@ function CartPage({ items, increaseQuantity, decreaseQuantity, removeFromCart })
           <h3>Résumé</h3>
           <div className='summary-row'>
             <span>Sous-total</span>
-            <strong>${subtotal.toFixed(2)}</strong>
+            <strong>{subtotal.toLocaleString('fr-FR')} DA</strong>
           </div>
           <div className='summary-row'>
             <span>Livraison</span>
-            <strong>Gratuite</strong>
+            <strong>{livraison === 0 ? 'Gratuite' : `${livraison.toLocaleString('fr-FR')} DA`}</strong>
           </div>
           <div className='summary-row total'>
             <span>Total</span>
-            <strong><p>{subtotal.toLocaleString('fr-FR')} DA</p></strong>
+            <strong>{total.toLocaleString('fr-FR')} DA</strong>
           </div>
           <button className='checkout-btn' onClick={() => navigate('/checkout')}>Passer la commande</button>
         </aside>

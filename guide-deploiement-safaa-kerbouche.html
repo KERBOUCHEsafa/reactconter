@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide déploiement — DZShop (Safaa Kerbouche)</title>
+<style>
+:root{--bg:#f6f7f9;--carte:#fff;--txt:#212529;--gris:#6c757d;--bleu:#0d6efd;--vert:#198754;--orange:#fd7e14;--rouge:#dc3545;--violet:#7048e8;--bordure:#dee2e6;--code:#1e1e2e;--codetxt:#e4e4e7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI",Roboto,sans-serif;line-height:1.65}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px 80px}
+header{background:linear-gradient(135deg,#198754,#0d6efd);color:#fff;padding:40px 16px;text-align:center}
+header .tag{display:inline-block;background:rgba(255,255,255,.2);border-radius:99px;padding:4px 14px;font-size:.82rem;margin-bottom:12px}
+header h1{font-size:1.8rem;margin-bottom:6px}
+h2{margin:44px 0 14px;padding-bottom:8px;border-bottom:3px solid var(--vert);font-size:1.3rem}
+h3{margin:22px 0 8px;font-size:1.05rem}
+p{margin-bottom:12px}
+ul,ol{margin:0 0 14px 22px}li{margin-bottom:6px}
+pre{background:var(--code);color:var(--codetxt);padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.85rem;line-height:1.55;margin:10px 0}
+code{font-family:"Cascadia Code",Consolas,monospace}
+p code,li code,td code{background:#e9ecef;color:#c7254e;padding:2px 6px;border-radius:4px;font-size:.88em}
+.fichier{background:#252a36;color:#a6e3a1;border-radius:6px 6px 0 0;padding:5px 14px;font-family:Consolas,monospace;font-size:.78rem;display:inline-block;margin-top:8px}
+.fichier+pre{border-radius:0 8px 8px 8px;margin-top:0}
+.box{border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0}
+.box b.t{display:block;margin-bottom:4px}
+.warn{border-left:4px solid var(--orange);background:#fff4e6}
+.err{border-left:4px solid var(--rouge);background:#fdeaec}
+.tip{border-left:4px solid var(--bleu);background:#e7f1ff}
+.ok{border-left:4px solid var(--vert);background:#e8f6ee}
+.neuf{border-left:4px solid var(--violet);background:#f1ecfd}
+details{background:var(--carte);border:1px solid var(--bordure);border-radius:8px;padding:10px 16px;margin:12px 0}
+summary{cursor:pointer;font-weight:600;color:var(--vert)}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--bordure);vertical-align:top}
+th{color:var(--vert);font-size:.8rem;text-transform:uppercase}
+.etape{display:inline-block;background:var(--vert);color:#fff;border-radius:99px;padding:1px 10px;font-size:.78rem;font-weight:700;margin-right:6px}
+@media(max-width:600px){header h1{font-size:1.4rem}}
+.fichier.terminal{background:#3b3f52;color:#f9e2af}
+.fichier.terminal+pre{border-radius:0 8px 8px 8px}
+pre{position:relative}
+.copier{position:absolute;top:8px;right:8px;background:#0d6efd;color:#fff;border:0;border-radius:6px;padding:5px 12px;font-size:.78rem;font-weight:600;cursor:pointer}
+.copier:hover{background:#0b5ed7}
+.copier.fait{background:#198754}
+pre.nocopy .copier{display:none}
+</style>
+</head>
+<body>
+<header>
+  <span class="tag">Élève : Safaa Kerbouche · Repo : reactconter (branche master) · mise en ligne</span>
+  <h1>🚀 Mettre le site en ligne (Render + Netlify)</h1>
+  <p>Sans Cloudinary — tu n'as pas d'upload de photo, pas besoin.</p>
+</header>
+<div class="wrap">
+
+<div class="box ok"><b class="t">💬 Avant de commencer</b>
+Ce guide suppose que tu as déjà fini et testé le <b>guide final</b> (<code>guide-final-safaa-kerbouche.html</code>) sur la branche <code>master</code> : comptes, panier qui ne s'efface plus, commandes qui marchent <b>en local</b>. Ici, on fait la même chose mais <b>en ligne</b>, pour que n'importe qui puisse visiter ton site depuis son téléphone.</div>
+
+<div class="box tip"><b class="t">💡 Le principe en une phrase</b>
+Ton projet a deux moitiés qui ne vivent pas au même endroit : le <b>serveur</b> (<code>backend/</code>) va habiter chez <b>Render</b>, le <b>site</b> (<code>reacconter/</code>) va habiter chez <b>Netlify</b>. Les deux doivent connaître l'adresse l'un de l'autre pour se parler — c'est tout le fil de ce guide.</div>
+
+<h2>Le plan</h2>
+<table>
+<tr><th>#</th><th>Étape</th><th>Durée</th></tr>
+<tr><td>1</td><td>Préparer le code (script de démarrage, fichier anti-404)</td><td>5 min</td></tr>
+<tr><td>2</td><td>Compte MongoDB Atlas</td><td>10 min (si pas déjà fait)</td></tr>
+<tr><td>3</td><td>Mettre le serveur en ligne sur Render</td><td>15 min</td></tr>
+<tr><td>4</td><td>Mettre le site en ligne sur Netlify</td><td>10 min</td></tr>
+<tr><td>5</td><td>Reconnecter les deux (CORS)</td><td>5 min</td></tr>
+<tr><td>6</td><td>Google Cloud : autoriser ta vraie adresse</td><td>5 min</td></tr>
+<tr><td>7</td><td>Vérifier et dépanner</td><td>10 min</td></tr>
+</table>
+
+<!-- ================== 1 ================== -->
+<h2>Étape 1 — Préparer le code</h2>
+
+<h3>1.1 — Un script pour démarrer le serveur "pour de vrai"</h3>
+<p>Sur ton ordinateur, tu démarres ton serveur avec <code>npm run dev</code> (qui relance tout seul à chaque modification, pratique pour travailler). Mais en ligne, Render ne modifie jamais ton code : il a juste besoin d'une commande simple pour démarrer une fois. Il lui manque ce script.</p>
+<p><b>Ouvre</b> <code>backend/package.json</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>.</p>
+<div class="fichier">backend/package.json</div>
+<pre>{
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node seed.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "google-auth-library": "^11.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.10.0"
+  }
+}</pre>
+<div class="box tip"><b class="t">💡 <code>"start": "node server.js"</code> — à quoi ça sert ?</b>
+Render lit toujours un script appelé <code>start</code> pour savoir comment allumer ton serveur. Sans lui, Render ne saurait pas quelle commande lancer et ton site resterait éternellement "en train de démarrer".</div>
+
+<h3>1.2 — Le fichier anti-404 pour Netlify</h3>
+<p>Ton site a plusieurs pages (<code>/panier</code>, <code>/checkout</code>...). En local ça marche très bien, mais une fois en ligne, si quelqu'un appuie sur F5 sur <code>/panier</code> ou colle ce lien directement dans son navigateur, Netlify va chercher un vrai dossier <code>panier</code> qui n'existe pas et afficher une erreur 404. Ce petit fichier dit à Netlify : "peu importe l'adresse demandée, renvoie toujours la page principale, et laisse React choisir quoi afficher".</p>
+<p><b>Crée ce fichier</b> : clic droit sur <code>reacconter/public</code> → <b>New File</b> → tape exactement <code>_redirects</code> (sans extension) → colle → <code>Ctrl + S</code>.</p>
+<div class="fichier">reacconter/public/_redirects</div>
+<pre>/*  /index.html  200</pre>
+
+<h3>1.3 — Pousser ces deux petits changements</h3>
+<div class="fichier terminal">Terminal</div>
+<pre>git add backend/package.json
+git add reacconter/public/_redirects
+git commit -m "Préparer le déploiement : script start et _redirects"
+git push origin master</pre>
+
+<!-- ================== 2 ================== -->
+<h2>Étape 2 — Compte MongoDB Atlas</h2>
+<p>Ta base de données tourne en local sur ton ordinateur pour l'instant (<code>mongodb://localhost</code> ou une URI Atlas déjà testée). En ligne, Render n'a pas accès à ton ordinateur : il a besoin d'une base <b>accessible depuis Internet</b>. Si tu as déjà un compte <a href="https://www.mongodb.com/cloud/atlas/register" target="_blank">MongoDB Atlas</a> (gratuit) avec ton URI de connexion, passe directement à l'étape 2.2.</p>
+
+<h3>2.1 — Créer le cluster (si tu n'en as pas déjà un)</h3>
+<ol>
+<li>Va sur <a href="https://www.mongodb.com/cloud/atlas/register" target="_blank">mongodb.com/cloud/atlas</a>, crée un compte gratuit.</li>
+<li><b>Create a deployment</b> → choisis <b>M0 Free</b> → laisse la région par défaut → <b>Create</b>.</li>
+<li>Crée un utilisateur de base de données (nom + mot de passe, note-les quelque part).</li>
+</ol>
+
+<h3>2.2 — Autoriser Render à se connecter</h3>
+<p>Dans Atlas, menu <b>Network Access</b> → <b>Add IP Address</b> → clique sur <b>Allow Access from Anywhere</b> (ça ajoute <code>0.0.0.0/0</code>) → <b>Confirm</b>.</p>
+<div class="box warn"><b class="t">⚠️ Pourquoi "n'importe où" et pas juste l'IP de Render ?</b>
+Render change l'adresse IP de ton serveur de temps en temps (ce n'est pas une adresse fixe). <code>0.0.0.0/0</code> veut dire "n'importe quelle IP peut essayer de se connecter" — ce n'est pas un problème de sécurité ici, car il faut <b>quand même</b> le bon utilisateur et le bon mot de passe pour entrer dans la base.</div>
+
+<h3>2.3 — Récupérer l'URI de connexion</h3>
+<p>Menu <b>Database</b> → bouton <b>Connect</b> sur ton cluster → <b>Drivers</b> → copie l'adresse qui ressemble à :</p>
+<pre class="nocopy">mongodb+srv://UTILISATEUR:MOT_DE_PASSE@cluster0.xxxxx.mongodb.net/dzshop?retryWrites=true&amp;w=majority</pre>
+<p>Remplace <code>MOT_DE_PASSE</code> par le vrai mot de passe de ton utilisateur (pas de <code>&lt;</code> <code>&gt;</code> autour). Garde cette ligne de côté, elle sert à l'étape 3.</p>
+
+<!-- ================== 3 ================== -->
+<h2>Étape 3 — Mettre le serveur en ligne sur Render</h2>
+
+<ol>
+<li>Va sur <a href="https://dashboard.render.com" target="_blank">dashboard.render.com</a>, connecte-toi avec GitHub.</li>
+<li><b>New</b> → <b>Web Service</b> → choisis ton repo <code>reactconter</code>.</li>
+</ol>
+
+<div class="box err"><b class="t">🎯 Le piège le plus fréquent : le Root Directory</b>
+Ton repo a <b>deux</b> dossiers de code (<code>backend/</code> et <code>reacconter/</code>). Si Render ne sait pas lequel utiliser, il va essayer de lancer le site React comme un serveur — et ça ne marchera jamais. Dans le champ <b>Root Directory</b>, mets exactement :
+<pre class="nocopy">backend</pre></div>
+
+<p>Remplis le reste du formulaire :</p>
+<table>
+<tr><th>Champ</th><th>Valeur</th></tr>
+<tr><td>Name</td><td><code>dzshop-safaa-api</code> (ou ce que tu veux)</td></tr>
+<tr><td>Region</td><td>Frankfurt (le plus proche)</td></tr>
+<tr><td>Branch</td><td><code>master</code></td></tr>
+<tr><td>Root Directory</td><td><code>backend</code></td></tr>
+<tr><td>Build Command</td><td><code>npm install</code></td></tr>
+<tr><td>Start Command</td><td><code>npm start</code></td></tr>
+<tr><td>Instance Type</td><td>Free</td></tr>
+</table>
+
+<h3>3.1 — Les variables d'environnement</h3>
+<p>Descends jusqu'à <b>Environment Variables</b> → <b>Add Environment Variable</b>, une par une :</p>
+<table>
+<tr><th>Clé</th><th>Valeur</th></tr>
+<tr><td><code>MONGO_URI</code></td><td>l'URI Atlas de l'étape 2.3</td></tr>
+<tr><td><code>JWT_SECRET</code></td><td>une longue phrase secrète, invente-la (ex: une phrase de 10 mots que tu es seule à connaître)</td></tr>
+<tr><td><code>GOOGLE_CLIENT_ID</code></td><td>ton Client ID Google (celui du guide final, le même que dans ton <code>.env</code> local)</td></tr>
+<tr><td><code>FRONTEND_URL</code></td><td>laisse <code>http://localhost:5173</code> pour l'instant, on la corrigera à l'étape 5</td></tr>
+</table>
+<p>Clique sur <b>Create Web Service</b>. Attends 2 à 5 minutes (regarde les logs qui défilent). Quand tu vois <code>MongoDB connecté</code> et <code>Serveur sur...</code>, c'est bon.</p>
+<p>En haut de la page, copie l'adresse de ton service, qui ressemble à <code>https://dzshop-safaa-api.onrender.com</code>. Garde-la, tu en as besoin à l'étape 4.</p>
+
+<!-- ================== 4 ================== -->
+<h2>Étape 4 — Mettre le site en ligne sur Netlify</h2>
+
+<ol>
+<li>Va sur <a href="https://app.netlify.com" target="_blank">app.netlify.com</a>, connecte-toi avec GitHub.</li>
+<li><b>Add new site</b> → <b>Import an existing project</b> → choisis <code>reactconter</code>.</li>
+</ol>
+
+<p>Remplis :</p>
+<table>
+<tr><th>Champ</th><th>Valeur</th></tr>
+<tr><td>Branch to deploy</td><td><code>master</code></td></tr>
+<tr><td>Base directory</td><td><code>reacconter</code></td></tr>
+<tr><td>Build command</td><td><code>npm run build</code></td></tr>
+<tr><td>Publish directory</td><td><code>reacconter/dist</code></td></tr>
+</table>
+
+<h3>4.1 — Variables d'environnement Netlify</h3>
+<p>Avant de cliquer sur Deploy, déroule <b>Advanced</b> → <b>New variable</b>, deux variables :</p>
+<table>
+<tr><th>Clé</th><th>Valeur</th></tr>
+<tr><td><code>VITE_API_URL</code></td><td>l'adresse Render de l'étape 3 (ex: <code>https://dzshop-safaa-api.onrender.com</code>) — <b>sans</b> <code>/api</code> à la fin</td></tr>
+<tr><td><code>VITE_GOOGLE_CLIENT_ID</code></td><td>le même Client ID Google que sur Render</td></tr>
+<tr><td><code>NODE_VERSION</code></td><td><code>22</code></td></tr>
+</table>
+<p>Clique sur <b>Deploy</b>. Attends 1 à 3 minutes. À la fin, Netlify te donne une adresse du genre <code>https://nom-au-hasard.netlify.app</code>. Garde-la.</p>
+
+<!-- ================== 5 ================== -->
+<h2>Étape 5 — Reconnecter les deux (CORS)</h2>
+<div class="box tip"><b class="t">💡 Pourquoi revenir sur Render ?</b>
+Ton serveur a une liste d'adresses autorisées à lui parler (le CORS, vu dans le guide final). Pour l'instant cette liste contient seulement <code>localhost</code>. Sans cette étape, ton vrai site en ligne sera bloqué par ton propre serveur avec une erreur CORS dans la console (F12).</div>
+<ol>
+<li>Retourne sur <a href="https://dashboard.render.com" target="_blank">dashboard.render.com</a> → ton service → <b>Environment</b>.</li>
+<li>Modifie <code>FRONTEND_URL</code> → mets ta vraie adresse Netlify de l'étape 4 (ex: <code>https://nom-au-hasard.netlify.app</code>, sans <code>/</code> à la fin).</li>
+<li><b>Save Changes</b> → Render redémarre tout seul (1-2 minutes).</li>
+</ol>
+
+<!-- ================== 6 ================== -->
+<h2>Étape 6 — Google Cloud : autoriser ta vraie adresse</h2>
+<p>Ton bouton "Connexion avec Google" a été autorisé pour <code>localhost</code> uniquement pendant les tests. Il faut ajouter ta vraie adresse.</p>
+<ol>
+<li>Va sur <a href="https://console.cloud.google.com/apis/credentials" target="_blank">console.cloud.google.com/apis/credentials</a>, ouvre ton identifiant OAuth (celui du guide final).</li>
+<li>Dans <b>Authorized JavaScript origins</b>, clique <b>Add URI</b> → colle ta vraie adresse Netlify (ex: <code>https://nom-au-hasard.netlify.app</code>, sans <code>/</code> à la fin).</li>
+<li><b>Save</b>. Ça peut prendre quelques minutes pour s'appliquer.</li>
+</ol>
+
+<!-- ================== 7 ================== -->
+<h2>Étape 7 — Vérifier et dépanner</h2>
+<p>Ouvre ta vraie adresse Netlify et vérifie, dans l'ordre :</p>
+<ul>
+<li>☐ La page d'accueil et le catalogue s'affichent (les produits viennent bien de ta base en ligne)</li>
+<li>☐ Inscription puis connexion marchent</li>
+<li>☐ Le bouton Google apparaît et connecte</li>
+<li>☐ Ajouter au panier, recharger la page (F5) → le panier est toujours là</li>
+<li>☐ Passer une commande → elle apparaît bien, et le stock du produit a baissé</li>
+<li>☐ Recharger directement sur <code>/panier</code> ou <code>/checkout</code> (coller l'adresse) → pas d'erreur 404</li>
+</ul>
+
+<h3>En cas de problème</h3>
+<table>
+<tr><th>Ce que tu vois</th><th>Ce que ça veut dire</th><th>Solution</th></tr>
+<tr><td>Logs Render affichent <code>vite</code> ou <code>Starting the development server</code></td><td>Render a essayé de lancer le site React comme un serveur</td><td>Vérifie le <b>Root Directory</b> = <code>backend</code> dans Render → Settings</td></tr>
+<tr><td>Erreur <code>ERESOLVE</code> ou <code>Cannot find module</code> dans les logs Render</td><td>Une dépendance manque ou est en conflit</td><td>Vérifie que <code>backend/package.json</code> est bien celui de l'étape 1.1, pas celui du frontend</td></tr>
+<tr><td>Page blanche + erreur 404 en rechargeant une page interne</td><td>Le fichier <code>_redirects</code> est absent ou mal placé</td><td>Vérifie qu'il est bien dans <code>reacconter/public/_redirects</code> (pas <code>reacconter/src</code>) et qu'il a été poussé sur GitHub</td></tr>
+<tr><td>Erreur <b>CORS</b> dans la console (F12)</td><td><code>FRONTEND_URL</code> sur Render ne correspond pas exactement à ton adresse Netlify</td><td>Recopie l'adresse Netlify <b>exacte</b> (sans <code>/</code> à la fin) dans <code>FRONTEND_URL</code> sur Render, puis Save</td></tr>
+<tr><td>Le site met 30-60 secondes à répondre la première fois</td><td>Normal sur le plan gratuit Render : le serveur s'endort après 15 min sans visite, et se réveille à la première requête</td><td>Rien à faire, c'est la limite du plan gratuit</td></tr>
+<tr><td>Le bouton Google ne fait rien ou erreur "origin not allowed"</td><td>L'adresse Netlify n'est pas (encore) autorisée dans Google Cloud</td><td>Revérifie l'étape 6, et attends quelques minutes après avoir sauvegardé</td></tr>
+</table>
+
+<div class="box ok"><b class="t">🎉 Et voilà</b>
+Une fois toutes les cases cochées, ton site DZShop est en ligne, visible par n'importe qui avec juste le lien Netlify. Bon travail Safaa !</div>
+
+</div>
+<script>
+document.querySelectorAll('pre').forEach(function(pre){
+  if(pre.classList.contains('nocopy')) return;
+  var btn=document.createElement('button');
+  btn.className='copier';btn.textContent='📋 Copier';
+  btn.onclick=function(){
+    navigator.clipboard.writeText(pre.innerText.replace(/📋 Copier$/,'').trim());
+    btn.textContent='✅ Copié';btn.classList.add('fait');
+    setTimeout(function(){btn.textContent='📋 Copier';btn.classList.remove('fait');},1500);
+  };
+  pre.appendChild(btn);
+});
+</script>
+</body>
+</html>

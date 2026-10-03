@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide final — DZShop (Safaa Kerbouche)</title>
+<style>
+:root{--bg:#f6f7f9;--carte:#fff;--txt:#212529;--gris:#6c757d;--bleu:#0d6efd;--vert:#198754;--orange:#fd7e14;--rouge:#dc3545;--violet:#7048e8;--bordure:#dee2e6;--code:#1e1e2e;--codetxt:#e4e4e7}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:system-ui,"Segoe UI",Roboto,sans-serif;line-height:1.65}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px 80px}
+header{background:linear-gradient(135deg,#198754,#0d6efd);color:#fff;padding:40px 16px;text-align:center}
+header .tag{display:inline-block;background:rgba(255,255,255,.2);border-radius:99px;padding:4px 14px;font-size:.82rem;margin-bottom:12px}
+header h1{font-size:1.8rem;margin-bottom:6px}
+h2{margin:44px 0 14px;padding-bottom:8px;border-bottom:3px solid var(--vert);font-size:1.3rem}
+h3{margin:22px 0 8px;font-size:1.05rem}
+p{margin-bottom:12px}
+ul,ol{margin:0 0 14px 22px}li{margin-bottom:6px}
+pre{background:var(--code);color:var(--codetxt);padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:.85rem;line-height:1.55;margin:10px 0}
+code{font-family:"Cascadia Code",Consolas,monospace}
+p code,li code,td code{background:#e9ecef;color:#c7254e;padding:2px 6px;border-radius:4px;font-size:.88em}
+.fichier{background:#252a36;color:#a6e3a1;border-radius:6px 6px 0 0;padding:5px 14px;font-family:Consolas,monospace;font-size:.78rem;display:inline-block;margin-top:8px}
+.fichier+pre{border-radius:0 8px 8px 8px;margin-top:0}
+.box{border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0}
+.box b.t{display:block;margin-bottom:4px}
+.warn{border-left:4px solid var(--orange);background:#fff4e6}
+.err{border-left:4px solid var(--rouge);background:#fdeaec}
+.tip{border-left:4px solid var(--bleu);background:#e7f1ff}
+.ok{border-left:4px solid var(--vert);background:#e8f6ee}
+.neuf{border-left:4px solid var(--violet);background:#f1ecfd}
+details{background:var(--carte);border:1px solid var(--bordure);border-radius:8px;padding:10px 16px;margin:12px 0}
+summary{cursor:pointer;font-weight:600;color:var(--vert)}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--bordure);vertical-align:top}
+th{color:var(--vert);font-size:.8rem;text-transform:uppercase}
+.etape{display:inline-block;background:var(--vert);color:#fff;border-radius:99px;padding:1px 10px;font-size:.78rem;font-weight:700;margin-right:6px}
+@media(max-width:600px){header h1{font-size:1.4rem}}
+.fichier.terminal{background:#3b3f52;color:#f9e2af}
+.fichier.terminal+pre{border-radius:0 8px 8px 8px}
+pre{position:relative}
+.copier{position:absolute;top:8px;right:8px;background:#0d6efd;color:#fff;border:0;border-radius:6px;padding:5px 12px;font-size:.78rem;font-weight:600;cursor:pointer}
+.copier:hover{background:#0b5ed7}
+.copier.fait{background:#198754}
+pre.nocopy .copier{display:none}
+</style>
+</head>
+<body>
+<header>
+  <span class="tag">Élève : Safaa Kerbouche · Repo : reactconter · guide final avant de continuer</span>
+  <h1>🛠️ Un seul chemin clair : finir le site sur la branche master</h1>
+  <p>Tu as deux branches qui ont chacune une partie du travail. On choisit la bonne, et on complète ce qui manque.</p>
+</header>
+<div class="wrap">
+
+<div class="box ok"><b class="t">💬 Salam Safaa !</b>
+J'ai regardé ton repo <b>reactconter</b> sur GitHub, et j'ai vu que tu as poussé du travail sur <b>deux branches différentes</b> (<code>main</code> et <code>master</code>) sans t'en rendre compte — ça arrive très souvent au début, ce n'est pas grave du tout. Chaque branche a une partie de ton travail : <code>main</code> a la connexion Google câblée côté site, et <code>master</code> a tout le serveur (comptes, produits) déjà construit. On ne va <b>pas</b> essayer de fusionner les deux (c'est une opération risquée, pas aujourd'hui) : on choisit <code>master</code> comme base, parce que c'est elle qui a déjà la bonne organisation de dossiers, et on <b>complète</b> ce qui lui manque. À la fin, tu n'auras plus qu'<b>une seule branche à pousser</b> : <code>master</code>.</div>
+
+<div class="box err"><b class="t">🔍 Ce que j'ai trouvé</b>
+<table>
+<tr><th>Branche</th><th>Ce qu'elle a</th><th>Ce qui lui manque</th></tr>
+<tr><td><code>main</code></td><td>Site à la racine, connexion Google câblée côté React (<code>@react-oauth/google</code>)</td><td><b>Aucun serveur du tout</b></td></tr>
+<tr><td><code>master</code> ✅ (base choisie)</td><td>Serveur complet (<code>backend/</code>) avec comptes + Google côté serveur déjà prêts, site dans <code>reacconter/</code></td><td>Aucune route de commande, panier non persistant, formulaires non branchés, port et CORS à corriger</td></tr>
+</table>
+<p style="margin-bottom:0">✅ <b>Déjà du bon travail dans <code>master</code> :</b> ton fichier <code>backend/routes/auth.js</code> gère déjà l'inscription, la connexion <b>et</b> la connexion Google côté serveur (avec <code>google-auth-library</code>), et les mots de passe sont bien protégés avec <code>bcrypt</code>. On garde tout ça tel quel.</p></div>
+
+<h2>Comment utiliser ce guide</h2>
+<div class="carte">
+<p><b>Règle d'or : tu copies, tu colles, tu n'inventes rien.</b> Chaque bloc noir a un bouton <b>📋 Copier</b> en haut à droite.</p>
+<ul>
+<li><b>Bloc « Terminal »</b> (titre jaune) : ce sont des commandes <b>PowerShell</b>. Ouvre le terminal de VS Code (menu <b>Terminal → New Terminal</b>), clique sur Copier, colle (<code>Ctrl + V</code>) et appuie sur <b>Entrée</b>. S'il y a plusieurs lignes, colle-les une par une si PowerShell n'enchaîne pas tout seul.</li>
+<li><b>Bloc « fichier »</b> (titre vert avec le nom du fichier) : c'est le <b>fichier complet</b>. Ouvre ce fichier dans VS Code (<code>Ctrl + P</code>, tape son nom, Entrée), <code>Ctrl + A</code> pour tout sélectionner, <code>Ctrl + V</code> pour coller à la place, puis <code>Ctrl + S</code>. <b>Tu remplaces tout le contenu</b>, tu n'as pas à chercher une ligne précise.</li>
+<li>Quand le fichier n'existe pas encore, crée-le : clic droit sur le dossier indiqué → <b>New File</b> → tape le nom → colle le code.</li>
+</ul>
+</div>
+
+<h3>Préparation — se mettre sur la bonne branche</h3>
+<p>Tout ce guide se fait dans ton dossier <code>reactconter</code>, sur la branche <code>master</code> (pas <code>main</code>) :</p>
+<div class="fichier terminal">Terminal</div>
+<pre>git fetch origin
+git checkout master
+git pull origin master</pre>
+<div class="box tip"><b class="t">💡 Pourquoi <code>master</code> et pas <code>main</code> ?</b>
+<code>master</code> a déjà les deux dossiers <code>backend/</code> et <code>reacconter/</code> côte à côte, avec un vrai serveur dedans. <code>main</code> n'a pas de serveur du tout — il aurait fallu tout reconstruire. On part toujours de la base la plus solide.</div>
+
+<h2>Le plan</h2>
+<table>
+<tr><th>#</th><th>Étape</th><th>Durée</th></tr>
+<tr><td>1</td><td>Backend : la route de commande (sécurisée), le port, le CORS</td><td>25 min</td></tr>
+<tr><td>2</td><td>Backend : le fichier <code>.env</code></td><td>10 min</td></tr>
+<tr><td>3</td><td>Frontend : installer <code>axios</code> et <code>@react-oauth/google</code></td><td>5 min</td></tr>
+<tr><td>4</td><td>Frontend : connecter les comptes (connexion, inscription, Google) à l'API</td><td>20 min</td></tr>
+<tr><td>5</td><td>Frontend : le catalogue depuis l'API, le panier qui ne s'efface plus</td><td>20 min</td></tr>
+<tr><td>6</td><td>Frontend : la vraie page de commande</td><td>15 min</td></tr>
+<tr><td>7</td><td>Tout tester</td><td>15 min</td></tr>
+</table>
+
+
+<!-- ================== 1 ================== -->
+<h2>Étape 1 — Backend : la commande, le port, le CORS</h2>
+<p>Ton serveur sait déjà gérer les comptes et les produits. Il lui manque la pièce la plus importante pour un e-commerce : <b>enregistrer une commande</b>, en vérifiant tout côté serveur.</p>
+<div class="box tip"><b class="t">💡 Règle d'or d'une commande sécurisée</b>
+Le navigateur envoie seulement <i>quel produit</i> et <i>combien</i>. C'est le <b>serveur</b> qui va chercher le vrai prix dans la base et qui calcule le total. Si on faisait confiance au prix envoyé par le navigateur, n'importe qui pourrait ouvrir les outils de développement (F12) et changer le prix d'un produit à 1 DA avant d'envoyer la commande.</div>
+
+<h3>1.1 — Le modèle de commande</h3>
+<p><b>Crée ce fichier</b> : clic droit sur le dossier <code>backend/models</code> dans VS Code → <b>New File</b> → tape <code>order.js</code> → colle le code ci-dessous → <code>Ctrl + S</code>.</p>
+<div class="fichier">backend/models/order.js</div>
+<pre>import mongoose from 'mongoose';
+
+const ligneSchema = new mongoose.Schema({
+  product:  { type: mongoose.Schema.Types.ObjectId, ref: 'Produit', required: true },
+  name:     { type: String, required: true },
+  price:    { type: Number, required: true, min: 0 },
+  quantity: { type: Number, required: true, min: 1 }
+}, { _id: false });
+
+const schema = new mongoose.Schema({
+  user:    { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+  items:   { type: [ligneSchema], required: true },
+  total:   { type: Number, required: true, min: 0 },
+  nom:     String,
+  prenom:  String,
+  email:   String,
+  wilaya:  String
+}, {
+  timestamps: true
+});
+
+export default mongoose.model('Order', schema);</pre>
+<p>💡 <b>Pourquoi recopier <code>name</code> et <code>price</code> dans la commande, alors qu'on a déjà <code>product</code> ?</b> Parce qu'un produit peut changer de prix plus tard. Si la commande ne gardait que le lien vers le produit, la facture d'hier afficherait le prix d'aujourd'hui — faux ! En recopiant le prix au moment de l'achat, la commande garde une <b>photo figée</b> pour toujours.</p>
+
+<h3>1.2 — La route de commande</h3>
+<p><b>Crée ce fichier</b> : clic droit sur le dossier <code>backend/routes</code> dans VS Code → <b>New File</b> → tape <code>order.js</code> → colle le code ci-dessous → <code>Ctrl + S</code>.</p>
+<div class="fichier">backend/routes/order.js</div>
+<pre>import express from 'express';
+import mongoose from 'mongoose';
+import Order from '../models/order.js';
+import Produit from '../models/produits.js';
+import { protect } from '../middleware/auth.js';
+
+const router = express.Router();
+
+// PASSER UNE COMMANDE  →  POST /api/orders   (il faut être connecté)
+router.post('/', protect, async function (req, res) {
+  try {
+    const { items, nom, prenom, email, wilaya } = req.body;
+
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: 'Le panier est vide' });
+    }
+
+    // Le navigateur envoie seulement { id, quantity } pour chaque article.
+    // On va chercher les VRAIS prix et le stock dans la base : on ne fait
+    // jamais confiance au prix envoyé par le navigateur (il peut être modifié dans F12).
+    const ids = items.map(function (item) { return String(item.id); });
+
+    if (!ids.every(function (id) { return mongoose.isValidObjectId(id); })) {
+      return res.status(400).json({ message: 'Produit invalide' });
+    }
+
+    const produitsEnBase = await Produit.find({ _id: { $in: ids } });
+
+    let total = 0;
+    const lignes = [];
+
+    for (const item of items) {
+      const produit = produitsEnBase.find(function (p) {
+        return String(p._id) === String(item.id);
+      });
+      const quantity = Number(item.quantity);
+
+      if (!produit) {
+        return res.status(400).json({ message: 'Produit introuvable' });
+      }
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 99) {
+        return res.status(400).json({ message: 'Quantité invalide pour ' + produit.name });
+      }
+      if (quantity > produit.stock) {
+        return res.status(400).json({ message: 'Stock insuffisant pour ' + produit.name });
+      }
+
+      total += produit.price * quantity;
+      lignes.push({ product: produit._id, name: produit.name, price: produit.price, quantity: quantity });
+    }
+
+    const order = await Order.create({
+      user: req.user.id,
+      items: lignes,
+      total: total,
+      nom: nom,
+      prenom: prenom,
+      email: email,
+      wilaya: wilaya
+    });
+
+    // On retire les articles vendus du stock
+    for (const ligne of lignes) {
+      await Produit.updateOne({ _id: ligne.product }, { $inc: { stock: -ligne.quantity } });
+    }
+
+    res.status(201).json(order);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// MES COMMANDES  →  GET /api/orders/mine   (il faut être connecté)
+router.get('/mine', protect, async function (req, res) {
+  try {
+    const orders = await Order.find({ user: req.user.id }).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+export default router;</pre>
+<div class="box tip"><b class="t">💡 Ce que fait cette route, en résumé</b>
+<ul style="margin-bottom:0"><li>Demande d'être <b>connectée</b> (grâce à ton middleware <code>protect</code> qui existait déjà).</li><li>Vérifie que chaque produit existe, que la quantité est raisonnable (entre 1 et 99), et que le <b>stock</b> suffit.</li><li>Calcule le total avec les <b>prix de la base</b>, jamais ceux envoyés par le site.</li><li>Retire les articles vendus du stock.</li></ul></div>
+
+<h3>1.3 — server.js : brancher la commande, corriger le port et le CORS</h3>
+<p>Ton <code>server.js</code> actuel a deux petits soucis : le port est écrit en dur (<code>5000</code>, impossible à changer en ligne) et le CORS est grand ouvert (<code>cors()</code> sans restriction, n'importe quel site pourrait appeler ton serveur). On corrige les deux en même temps qu'on branche la nouvelle route.</p>
+<p><b>Ouvre</b> <code>backend/server.js</code> dans VS Code, <code>Ctrl + A</code>, puis <b>colle</b> le code ci-dessous et <code>Ctrl + S</code>.</p>
+<div class="fichier">backend/server.js</div>
+<pre>// IMPORTANT : "dotenv/config" doit être le TOUT PREMIER import.
+// En JavaScript moderne (ESM), chaque import est entièrement exécuté avant
+// de passer au suivant. Si on importait d'abord les routes puis qu'on
+// appelait dotenv.config() après, les routes auraient déjà lu process.env
+// (vide) avant que le fichier .env soit chargé — ça casserait le JWT_SECRET.
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import mongoose from 'mongoose';
+import produitRoutes from './routes/produits.js';
+import authRoutes from './routes/auth.js';
+import orderRoutes from './routes/order.js';
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(function () { console.log('MongoDB connecté'); })
+  .catch(function (err) { console.log('Erreur MongoDB :', err.message); });
+
+const app = express();
+
+// Qui a le droit d'appeler ce serveur depuis un navigateur ?
+// En local : Vite (port 5173). En ligne : l'adresse de ton site (FRONTEND_URL).
+const origines = ['http://localhost:5173', process.env.FRONTEND_URL].filter(Boolean);
+app.use(cors({ origin: origines }));
+app.use(express.json());
+
+app.use('/api/products', produitRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/orders', orderRoutes);
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, function () {
+  console.log('Serveur sur http://localhost:' + PORT);
+});</pre>
+<div class="box warn"><b class="t">⚠️ Un vrai bug que j'ai trouvé (et corrigé) en testant</b>
+En plaçant <code>dotenv.config()</code> <b>après</b> les imports des routes (comme c'était écrit avant), le fichier <code>routes/auth.js</code> lisait <code>JWT_SECRET</code> trop tôt — avant que ton fichier <code>.env</code> soit chargé — et signait les tickets de connexion avec une valeur par défaut. Résultat : connexion et inscription auraient semblé marcher, mais <b>toutes les routes protégées (comme les commandes) auraient rejeté le ticket avec « Token invalide »</b>. En mettant <code>import 'dotenv/config'</code> tout en haut (comme dans ton <code>seed.js</code>), le fichier <code>.env</code> est garanti d'être chargé avant tout le reste. J'ai testé : ça fonctionne maintenant du début à la fin.</div>
+
+<h2>Étape 2 — Backend : le fichier .env</h2>
+<p><b>Crée ce fichier</b> : clic droit sur le dossier <code>backend</code> dans VS Code → <b>New File</b> → tape <code>.env.example</code> → colle le code ci-dessous → <code>Ctrl + S</code>.</p>
+<div class="fichier">backend/.env.example</div>
+<pre># Copie ce fichier en ".env" (dans le dossier backend) et remplis les vraies valeurs.
+# Ne commit JAMAIS le ".env" : seul ce fichier modèle va sur GitHub.
+
+MONGO_URI=mongodb+srv://UTILISATEUR:MOT_DE_PASSE@cluster0.xxxxx.mongodb.net/dzshop?retryWrites=true&amp;w=majority
+JWT_SECRET=mets_ici_une_longue_phrase_secrete_a_toi
+GOOGLE_CLIENT_ID=ton_client_id_google.apps.googleusercontent.com
+PORT=5000
+
+# En ligne uniquement (séance de mise en ligne) : l'adresse de ton site
+FRONTEND_URL=https://ton-site.netlify.app</pre>
+<p>Crée ensuite le <b>vrai</b> fichier <code>backend/.env</code> (copie du modèle) avec tes vraies valeurs. Il existe déjà dans ton <code>backend/.gitignore</code> une ligne qui empêche <code>.env</code> de partir sur GitHub — rien à faire de plus de ce côté.</p>
+<div class="fichier terminal">Terminal</div>
+<pre>cd backend
+npm install
+npm run dev</pre>
+<p>Ouvre <code>http://localhost:5000/api/products</code> dans ton navigateur : tu dois voir tes produits en JSON. 🎉</p>
+
+
+<!-- ================== 3 ================== -->
+<h2>Étape 3 — Frontend : installer axios et Google</h2>
+<p>On revient dans le dossier <code>reacconter</code> (le site). Il lui manque deux outils : <code>axios</code> (pour parler au serveur) et <code>@react-oauth/google</code> (pour le bouton Google, qui n'existait que sur l'autre branche).</p>
+<div class="fichier terminal">Terminal</div>
+<pre>cd reacconter
+npm install axios @react-oauth/google</pre>
+
+<h3>3.1 — Le fichier qui connaît l'adresse du serveur</h3>
+<p><b>Crée ce fichier</b> : clic droit sur le dossier <code>reacconter/src</code> dans VS Code → <b>New Folder</b> → tape <code>api</code> → puis dans ce nouveau dossier <code>api</code> → <b>New File</b> → tape <code>axios.js</code> → colle le code ci-dessous → <code>Ctrl + S</code>.</p>
+<div class="fichier">reacconter/src/api/axios.js</div>
+<pre>import axios from 'axios';
+
+// Un seul endroit qui connaît l'adresse du serveur.
+// En local : http://localhost:5000. En ligne : la variable VITE_API_URL.
+const api = axios.create({
+  baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api'
+});
+
+let token = null;
+
+export function setAuthToken(t) {
+  token = t;
+}
+
+api.interceptors.request.use(function (config) {
+  if (token) {
+    config.headers.Authorization = 'Bearer ' + token;
+  }
+  return config;
+});
+
+export default api;</pre>
+<p>💡 <b>C'est quoi un "interceptor" ?</b> C'est une petite fonction qui s'exécute automatiquement <b>avant chaque appel</b> au serveur. Ici, elle ajoute le ticket de connexion (<code>token</code>) dans l'en-tête de la demande, sans que tu aies à y penser à chaque fois que tu appelles <code>api.get(...)</code> ou <code>api.post(...)</code>.</p>
+
+<h3>3.2 — reacconter/.env.example</h3>
+<p><b>Crée ce fichier</b> : clic droit sur le dossier <code>reacconter</code> → <b>New File</b> → tape <code>.env.example</code> → colle le code ci-dessous → <code>Ctrl + S</code>.</p>
+<div class="fichier">reacconter/.env.example</div>
+<pre># Copie ce fichier en ".env" (dans le dossier reacconter) et remplis les vraies valeurs.
+# Ne commit JAMAIS le ".env" : seul ce fichier modèle va sur GitHub.
+
+VITE_API_URL=http://localhost:5000
+VITE_GOOGLE_CLIENT_ID=ton_client_id_google.apps.googleusercontent.com</pre>
+<p>Crée ensuite le <b>vrai</b> fichier <code>reacconter/.env</code> avec le même <code>GOOGLE_CLIENT_ID</code> que celui mis dans <code>backend/.env</code> (c'est le même compte Google des deux côtés).</p>
+
+<h3>3.3 — main.jsx : activer Google au démarrage du site</h3>
+<p><b>Ouvre</b> <code>reacconter/src/main.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>.</p>
+<div class="fichier">reacconter/src/main.jsx</div>
+<pre>import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { setAuthToken } from './api/axios';
+import './index.css';
+import App from './App.jsx';
+
+// Si on était déjà connectée avant un F5, on renvoie le token au serveur
+// pour chaque appel, sans avoir à se reconnecter.
+const savedToken = localStorage.getItem('token');
+if (savedToken) {
+  setAuthToken(savedToken);
+}
+
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
+const app = (
+  &lt;StrictMode&gt;
+    {googleClientId ? (
+      &lt;GoogleOAuthProvider clientId={googleClientId}&gt;
+        &lt;App /&gt;
+      &lt;/GoogleOAuthProvider&gt;
+    ) : (
+      &lt;App /&gt;
+    )}
+  &lt;/StrictMode&gt;
+);
+
+createRoot(document.getElementById('root')).render(app);</pre>
+
+
+<!-- ================== 4 ================== -->
+<h2>Étape 4 — Frontend : connecter les comptes à l'API</h2>
+<p>Ta page <code>user-page.jsx</code> a déjà de beaux formulaires, mais ils ne faisaient jusqu'ici que des <code>alert()</code> — aucun appel au serveur. On les branche pour de vrai, avec en plus le bouton Google.</p>
+<p><b>Ouvre</b> <code>reacconter/src/user-page.jsx</code>, <code>Ctrl + A</code>, colle tout le code ci-dessous, <code>Ctrl + S</code>.</p>
+<div class="fichier">reacconter/src/user-page.jsx</div>
+<pre>import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import api, { setAuthToken } from './api/axios';
+import './produits-cart.css';
+
+function AuthPage() {
+  const navigate = useNavigate();
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [signUpData, setSignUpData] = useState({
+    email: '',
+    phone: '',
+    password: '',
+    name: '',
+    surname: ''
+  });
+  const [signInData, setSignInData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleSignUpChange = (e) => {
+    const { name, value } = e.target;
+    setSignUpData({ ...signUpData, [name]: value });
+  };
+
+  const handleSignInChange = (e) => {
+    const { name, value } = e.target;
+    setSignInData({ ...signInData, [name]: value });
+  };
+
+  const saveAuth = (userData) => {
+    setAuthToken(userData.token);
+    localStorage.setItem('token', userData.token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    navigate('/');
+  };
+
+  const handleSignUpSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!signUpData.email) {
+      alert('Veuillez entrer un email');
+      return;
+    }
+
+    if (!signUpData.password || !signUpData.name || !signUpData.surname) {
+      alert('Veuillez remplir tous les champs');
+      return;
+    }
+
+    try {
+      const response = await api.post('/auth/register', {
+        nom: `${signUpData.name} ${signUpData.surname}`.trim(),
+        email: signUpData.email,
+        password: signUpData.password
+      });
+
+      saveAuth(response.data);
+      setSignUpData({ email: '', phone: '', password: '', name: '', surname: '' });
+    } catch (error) {
+      alert(error?.response?.data?.message || 'Erreur lors de la création du compte');
+    }
+  };
+
+  const handleSignInSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!signInData.email || !signInData.password) {
+      alert('Veuillez entrer votre email et mot de passe');
+      return;
+    }
+
+    try {
+      const response = await api.post('/auth/login', {
+        email: signInData.email,
+        password: signInData.password
+      });
+
+      saveAuth(response.data);
+      setSignInData({ email: '', password: '' });
+    } catch (error) {
+      alert(error?.response?.data?.message || 'Erreur lors de la connexion');
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const response = await api.post('/auth/google', {
+        credential: credentialResponse.credential
+      });
+
+      saveAuth(response.data);
+    } catch (error) {
+      alert(error?.response?.data?.message || 'La connexion Google a échoué');
+    }
+  };
+
+  return (
+    &lt;div className='auth-page'&gt;
+      &lt;div className='auth-container'&gt;
+        &lt;div className='auth-tabs'&gt;
+          &lt;button
+            className={`auth-tab ${!isSignUp ? 'active' : ''}`}
+            onClick={() => setIsSignUp(false)}
+          &gt;
+            Connexion
+          &lt;/button&gt;
+          &lt;button
+            className={`auth-tab ${isSignUp ? 'active' : ''}`}
+            onClick={() => setIsSignUp(true)}
+          &gt;
+            Inscription
+          &lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;div className='google-auth-box'&gt;
+          {googleClientId ? (
+            &lt;GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => alert('Google login failed')}
+              text='continue_with'
+              size='large'
+              shape='pill'
+            /&gt;
+          ) : (
+            &lt;p className='google-auth-warning'&gt;Ajoutez VITE_GOOGLE_CLIENT_ID dans votre fichier .env pour activer Google.&lt;/p&gt;
+          )}
+        &lt;/div&gt;
+
+        {!isSignUp ? (
+          &lt;div className='auth-form-container'&gt;
+            &lt;div className='auth-header'&gt;
+              &lt;p className='auth-tag'&gt;Connexion&lt;/p&gt;
+              &lt;h2&gt;Se connecter&lt;/h2&gt;
+              &lt;p className='auth-subtitle'&gt;Accédez à votre compte&lt;/p&gt;
+            &lt;/div&gt;
+
+            &lt;form className='auth-form' onSubmit={handleSignInSubmit}&gt;
+              &lt;label className='auth-field'&gt;
+                &lt;span&gt;Email&lt;/span&gt;
+                &lt;input
+                  type='email'
+                  name='email'
+                  placeholder='Votre email'
+                  value={signInData.email}
+                  onChange={handleSignInChange}
+                /&gt;
+              &lt;/label&gt;
+
+              &lt;label className='auth-field'&gt;
+                &lt;span&gt;Mot de passe&lt;/span&gt;
+                &lt;input
+                  type='password'
+                  name='password'
+                  placeholder='Votre mot de passe'
+                  value={signInData.password}
+                  onChange={handleSignInChange}
+                /&gt;
+              &lt;/label&gt;
+
+              &lt;button type='submit' className='auth-btn'&gt;Se connecter&lt;/button&gt;
+            &lt;/form&gt;
+          &lt;/div&gt;
+        ) : (
+          &lt;div className='auth-form-container'&gt;
+            &lt;div className='auth-header'&gt;
+              &lt;p className='auth-tag'&gt;Inscription&lt;/p&gt;
+              &lt;h2&gt;Créer un compte&lt;/h2&gt;
+              &lt;p className='auth-subtitle'&gt;Rejoignez-nous aujourd'hui&lt;/p&gt;
+            &lt;/div&gt;
+
+            &lt;form className='auth-form' onSubmit={handleSignUpSubmit}&gt;
+              &lt;div className='auth-field-row'&gt;
+                &lt;label className='auth-field'&gt;
+                  &lt;span&gt;Nom&lt;/span&gt;
+                  &lt;input
+                    type='text'
+                    name='name'
+                    placeholder='Votre nom'
+                    value={signUpData.name}
+                    onChange={handleSignUpChange}
+                  /&gt;
+                &lt;/label&gt;
+
+                &lt;label className='auth-field'&gt;
+                  &lt;span&gt;Prénom&lt;/span&gt;
+                  &lt;input
+                    type='text'
+                    name='surname'
+                    placeholder='Votre prénom'
+                    value={signUpData.surname}
+                    onChange={handleSignUpChange}
+                  /&gt;
+                &lt;/label&gt;
+              &lt;/div&gt;
+
+              &lt;label className='auth-field'&gt;
+                &lt;span&gt;Email&lt;/span&gt;
+                &lt;input
+                  type='email'
+                  name='email'
+                  placeholder='Votre email'
+                  value={signUpData.email}
+                  onChange={handleSignUpChange}
+                /&gt;
+              &lt;/label&gt;
+
+              &lt;label className='auth-field'&gt;
+                &lt;span&gt;Numéro de téléphone (optionnel)&lt;/span&gt;
+                &lt;input
+                  type='tel'
+                  name='phone'
+                  placeholder='Votre numéro de téléphone'
+                  value={signUpData.phone}
+                  onChange={handleSignUpChange}
+                /&gt;
+              &lt;/label&gt;
+
+              &lt;label className='auth-field'&gt;
+                &lt;span&gt;Mot de passe&lt;/span&gt;
+                &lt;input
+                  type='password'
+                  name='password'
+                  placeholder='Créer un mot de passe'
+                  value={signUpData.password}
+                  onChange={handleSignUpChange}
+                /&gt;
+              &lt;/label&gt;
+
+              &lt;button type='submit' className='auth-btn'&gt;Créer un compte&lt;/button&gt;
+            &lt;/form&gt;
+          &lt;/div&gt;
+        )}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default AuthPage;</pre>
+<div class="box tip"><b class="t">💡 Pourquoi <code>GoogleLogin</code> marche sans rien connecter côté React ?</b>
+Ton serveur savait déjà vérifier un ticket Google (<code>backend/routes/auth.js</code>, avec <code>verifyIdToken</code>) — c'était du bon code qui n'attendait que ça. Le composant <code>GoogleLogin</code> affiche juste le bouton et te donne un <code>credential</code> (le ticket) une fois que la personne a cliqué et choisi son compte Google ; on l'envoie ensuite à <code>/api/auth/google</code>, exactement comme pour <code>/login</code> ou <code>/register</code>.</div>
+
+
+<!-- ================== 5 ================== -->
+<h2>Étape 5 — Frontend : le catalogue depuis l'API, et le panier qui ne s'efface plus</h2>
+<p>Jusqu'ici, tes produits venaient d'un fichier en dur (<code>produits-data.js</code>) avec des identifiants <code>1, 2, 3...</code>. Le problème : ta commande, elle, doit pointer vers de <b>vrais</b> produits en base de données (identifiants Mongo, plus longs). On bascule donc le catalogue sur l'API — comme ça, le panier contient directement les vrais produits, prêts pour la commande.</p>
+
+<h3>5.1 — La liste des produits</h3>
+<p><b>Ouvre</b> <code>reacconter/src/produits.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>.</p>
+<div class="fichier">reacconter/src/produits.jsx</div>
+<pre>import { useState, useEffect } from 'react';
+import './produits.css';
+import { Link } from 'react-router-dom';
+import api from './api/axios';
+
+function Product() {
+  const [produits, setProduits] = useState([]);
+
+  useEffect(function () {
+    api.get('/products')
+      .then(function (response) {
+        setProduits(response.data);
+      })
+      .catch(function () {
+        setProduits([]);
+      });
+  }, []);
+
+  return (
+    &lt;div className='products'&gt;
+      {produits.map((p) => (
+        &lt;div key={p._id} className='product'&gt;
+          &lt;img src={p.image} alt={p.name} /&gt;
+          &lt;h3&gt;{p.name}&lt;/h3&gt;
+          &lt;p&gt;{p.price}&lt;/p&gt;
+          &lt;Link to={`/produits/${p._id}`}&gt;View details&lt;/Link&gt;
+        &lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+
+export default Product;</pre>
+
+<h3>5.2 — La fiche produit</h3>
+<p><b>Ouvre</b> <code>reacconter/src/produitsinfo.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>.</p>
+<div class="fichier">reacconter/src/produitsinfo.jsx</div>
+<pre>import { Link, useParams } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import api from './api/axios';
+import './produits-cart.css';
+
+function ProductDetails({ addToCart }) {
+
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(function () {
+    let annule = false;
+
+    api.get(`/products/${id}`)
+      .then(function (response) {
+        if (!annule) setProduct(response.data);
+      })
+      .catch(function () {
+        if (!annule) setNotFound(true);
+      });
+
+    return function () {
+      annule = true;
+    };
+  }, [id]);
+
+  if (notFound) {
+    return (
+      &lt;div className="not-found"&gt;
+        &lt;h2&gt;Product not found&lt;/h2&gt;
+
+        &lt;Link to="/"&gt;
+          Back to Products
+        &lt;/Link&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  if (!product) {
+    return (
+      &lt;div className="not-found"&gt;
+        &lt;h2&gt;Chargement...&lt;/h2&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  return (
+    &lt;div className="product-details"&gt;
+
+      &lt;Link
+        to="/"
+        className="back-link"
+      &gt;
+        ← Back to Products
+      &lt;/Link&gt;
+
+      &lt;div className="details-container"&gt;
+
+        &lt;div className="details-image"&gt;
+
+          &lt;img
+            src={product.image}
+            alt={product.name}
+          /&gt;
+
+        &lt;/div&gt;
+
+        &lt;div className="details-info"&gt;
+
+          &lt;span className="category"&gt;
+            {product.category}
+          &lt;/span&gt;
+
+          &lt;h1&gt;{product.name}&lt;/h1&gt;
+
+          &lt;p className="details-title"&gt;
+            {product.title}
+          &lt;/p&gt;
+
+          &lt;div className="details-rating"&gt;
+
+            &lt;span&gt;
+              ★★★★★
+            &lt;/span&gt;
+
+            &lt;span&gt;
+              {product.rating} ({product.reviews} reviews)
+            &lt;/span&gt;
+
+          &lt;/div&gt;
+
+          &lt;div className="details-price"&gt;
+            &lt;p&gt;{product.price.toLocaleString('fr-FR')} DA&lt;/p&gt;
+          &lt;/div&gt;
+
+          &lt;p className="description"&gt;
+            {product.description}
+          &lt;/p&gt;
+
+          &lt;div className="stock"&gt;
+            {product.stock > 0
+              ? `✓ ${product.stock} items available`
+              : "Out of stock"
+            }
+          &lt;/div&gt;
+
+          &lt;button
+            className="details-cart-btn"
+            onClick={() => addToCart(product)}
+            disabled={product.stock === 0}
+          &gt;
+            🛒 Add to Cart
+          &lt;/button&gt;
+
+        &lt;/div&gt;
+
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+  );
+}
+
+export default ProductDetails;</pre>
+
+<h3>5.3 — CartPage.jsx : le panier utilise maintenant <code>_id</code></h3>
+<p>Comme le catalogue donne maintenant de vrais produits Mongo (identifiant <code>_id</code>, pas <code>id</code>), le panier doit s'en servir aussi.</p>
+<p><b>Ouvre</b> <code>reacconter/src/CartPage.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>.</p>
+<div class="fichier">reacconter/src/CartPage.jsx</div>
+<pre>
+import { useNavigate } from 'react-router-dom';
+import './produits-cart.css';
+
+function CartItem({
+  item,
+  increaseQuantity,
+  decreaseQuantity,
+  removeFromCart
+}) {
+  return (
+    &lt;div className='cart-item'&gt;
+      &lt;img src={item.image} alt={`Image of ${item.name}`} /&gt;
+
+      &lt;div className='cart-item-info'&gt;
+        &lt;h3&gt;{item.name}&lt;/h3&gt;
+        &lt;p&gt;${Number(item.price).toFixed(2)}&lt;/p&gt;
+
+        &lt;div className='quantity'&gt;
+          &lt;button onClick={() => decreaseQuantity(item._id)} aria-label='Decrease quantity'&gt;−&lt;/button&gt;
+          &lt;span&gt;{item.quantity}&lt;/span&gt;
+          &lt;button onClick={() => increaseQuantity(item._id)} aria-label='Increase quantity'&gt;+&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div className='cart-item-right'&gt;
+        &lt;strong&gt;${(Number(item.price) * item.quantity).toFixed(2)}&lt;/strong&gt;
+        &lt;button className='remove-btn' onClick={() => removeFromCart(item._id)} aria-label='Remove item'&gt;🗑️&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+function CartPage({ items, increaseQuantity, decreaseQuantity, removeFromCart }) {
+  const navigate = useNavigate();
+  const subtotal = items.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
+
+  if (!items.length) {
+    return (
+      &lt;div className='cart-empty'&gt;
+        &lt;h2&gt;Votre panier est vide&lt;/h2&gt;
+        &lt;p&gt;
+          Ajoutez quelques produits pour commencer votre achat.{' '}
+          &lt;a href='/produits'&gt;Voir les produits&lt;/a&gt;
+        &lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  return (
+    &lt;div className='cart-page'&gt;
+      &lt;div className='cart-header'&gt;
+        &lt;h2&gt;Panier&lt;/h2&gt;
+      &lt;/div&gt;
+
+      &lt;div className='cart-layout'&gt;
+        &lt;div className='cart-items'&gt;
+          {items.map((item) => (
+            &lt;CartItem
+              key={item._id}
+              item={item}
+              increaseQuantity={increaseQuantity}
+              decreaseQuantity={decreaseQuantity}
+              removeFromCart={removeFromCart}
+            /&gt;
+          ))}
+        &lt;/div&gt;
+
+        &lt;aside className='cart-summary'&gt;
+          &lt;h3&gt;Résumé&lt;/h3&gt;
+          &lt;div className='summary-row'&gt;
+            &lt;span&gt;Sous-total&lt;/span&gt;
+            &lt;strong&gt;${subtotal.toFixed(2)}&lt;/strong&gt;
+          &lt;/div&gt;
+          &lt;div className='summary-row'&gt;
+            &lt;span&gt;Livraison&lt;/span&gt;
+            &lt;strong&gt;Gratuite&lt;/strong&gt;
+          &lt;/div&gt;
+          &lt;div className='summary-row total'&gt;
+            &lt;span&gt;Total&lt;/span&gt;
+            &lt;strong&gt;&lt;p&gt;{subtotal.toLocaleString('fr-FR')} DA&lt;/p&gt;&lt;/strong&gt;
+          &lt;/div&gt;
+          &lt;button className='checkout-btn' onClick={() => navigate('/checkout')}&gt;Passer la commande&lt;/button&gt;
+        &lt;/aside&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default CartPage;</pre>
+
+<h3>5.4 — App.jsx : panier sauvegardé dans le navigateur</h3>
+<p>On ajoute <code>localStorage</code> pour que le panier survive à un rafraîchissement (F5), et on prépare le passage du panier à la page de commande.</p>
+<p><b>Ouvre</b> <code>reacconter/src/App.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>.</p>
+<div class="fichier">reacconter/src/App.jsx</div>
+<pre>import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import Navbar from './navbar.jsx';
+import './navbar.css';
+import './App.css';
+import Footer from './footer.jsx';
+import './footer.css';
+import Dashbored from './dashbored.jsx';
+import Produits from './produits.jsx';
+import ProductDetails from './produitsinfo.jsx';
+import CartPage from './CartPage.jsx';
+import CheckoutPage from './CheckoutPage.jsx';
+import AuthPage from './user-page.jsx';
+import AdminPage from './AdminPage.jsx';
+import './produits.css';
+
+// Au démarrage, on relit le panier sauvegardé dans le navigateur :
+// un F5 ne doit plus vider le panier.
+function lirePanierDepuisStockage() {
+  try {
+    const sauvegarde = localStorage.getItem('panier');
+    return sauvegarde ? JSON.parse(sauvegarde) : [];
+  } catch {
+    return [];
+  }
+}
+
+function App() {
+  const [cartItems, setCartItems] = useState(lirePanierDepuisStockage);
+
+  // À chaque changement du panier, on le sauvegarde dans le navigateur.
+  useEffect(function () {
+    localStorage.setItem('panier', JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  const addToCart = (product) => {
+    setCartItems((currentCart) => {
+      const existingItem = currentCart.find((item) => item._id === product._id);
+
+      if (existingItem) {
+        return currentCart.map((item) =>
+          item._id === product._id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+
+      return [...currentCart, { ...product, quantity: 1 }];
+    });
+  };
+
+  const increaseQuantity = (productId) => {
+    setCartItems((currentCart) =>
+      currentCart.map((item) =>
+        item._id === productId ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  const decreaseQuantity = (productId) => {
+    setCartItems((currentCart) =>
+      currentCart
+        .map((item) =>
+          item._id === productId ? { ...item, quantity: item.quantity - 1 } : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+  };
+
+  const removeFromCart = (productId) => {
+    setCartItems((currentCart) =>
+      currentCart.filter((item) => item._id !== productId)
+    );
+  };
+
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Navbar cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} /&gt;
+
+      &lt;main className='content'&gt;
+        &lt;Routes&gt;
+          &lt;Route path='/' element={&lt;Dashbored /&gt;} /&gt;
+          &lt;Route path='/produits' element={&lt;Produits /&gt;} /&gt;
+          &lt;Route path='/products' element={&lt;Produits /&gt;} /&gt;
+          &lt;Route path='/produits/:id' element={&lt;ProductDetails addToCart={addToCart} /&gt;} /&gt;
+          &lt;Route
+            path='/cart'
+            element={
+              &lt;CartPage
+                items={cartItems}
+                increaseQuantity={increaseQuantity}
+                decreaseQuantity={decreaseQuantity}
+                removeFromCart={removeFromCart}
+              /&gt;
+            }
+          /&gt;
+          &lt;Route
+            path='/panier'
+            element={
+              &lt;CartPage
+                items={cartItems}
+                increaseQuantity={increaseQuantity}
+                decreaseQuantity={decreaseQuantity}
+                removeFromCart={removeFromCart}
+              /&gt;
+            }
+          /&gt;
+          &lt;Route
+            path='/checkout'
+            element={&lt;CheckoutPage cartItems={cartItems} clearCart={clearCart} /&gt;}
+          /&gt;
+          &lt;Route path='/connexion' element={&lt;AuthPage /&gt;} /&gt;
+          &lt;Route path='/admin' element={&lt;AdminPage /&gt;} /&gt;
+        &lt;/Routes&gt;
+      &lt;/main&gt;
+
+      &lt;Footer /&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+export default App;</pre>
+<div class="box tip"><b class="t">💡 <code>useState(lirePanierDepuisStockage)</code>, pas <code>useState(lirePanierDepuisStockage())</code></b>
+Sans les parenthèses, React n'appelle la fonction <b>qu'une seule fois</b>, au tout premier rendu. Avec les parenthèses, elle serait rappelée à chaque re-rendu du composant — inutile et plus lent.</div>
+
+
+<!-- ================== 6 ================== -->
+<h2>Étape 6 — Frontend : la vraie page de commande</h2>
+<p>Ta page <code>CheckoutPage.jsx</code> a un joli formulaire, mais jusqu'ici elle ne connaissait même pas le panier et ne faisait aucun appel au serveur (<code>setSubmitted(true)</code> tout seul). On la branche sur <code>POST /api/orders</code>, avec les vrais articles.</p>
+<p><b>Ouvre</b> <code>reacconter/src/CheckoutPage.jsx</code>, <code>Ctrl + A</code>, colle, <code>Ctrl + S</code>.</p>
+<div class="fichier">reacconter/src/CheckoutPage.jsx</div>
+<pre>import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from './api/axios';
+import './produits-cart.css';
+
+function CheckoutPage({ cartItems = [], clearCart }) {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: '',
+    surname: '',
+    email: '',
+    state: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const [envoi, setEnvoi] = useState(false);
+  const [erreur, setErreur] = useState('');
+
+  const updateField = (event) => {
+    const { name, value } = event.target;
+    setFormData((currentForm) => ({ ...currentForm, [name]: value }));
+  };
+
+  const total = cartItems.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setErreur('');
+
+    if (cartItems.length === 0) {
+      setErreur('Votre panier est vide.');
+      return;
+    }
+
+    setEnvoi(true);
+
+    try {
+      await api.post('/orders', {
+        items: cartItems.map((item) => ({ id: item._id, quantity: item.quantity })),
+        nom: formData.name,
+        prenom: formData.surname,
+        email: formData.email,
+        wilaya: formData.state,
+      });
+
+      if (clearCart) {
+        clearCart();
+      }
+      setSubmitted(true);
+    } catch (error) {
+      setErreur(error?.response?.data?.message || 'Erreur lors de la commande');
+    }
+
+    setEnvoi(false);
+  };
+
+  if (submitted) {
+    return (
+      &lt;section className='order-page checkout-page'&gt;
+        &lt;div className='order-card checkout-confirmation'&gt;
+          &lt;span className='checkout-confirmation-icon' aria-hidden='true'&gt;✓&lt;/span&gt;
+          &lt;h2&gt;Commande confirmée&lt;/h2&gt;
+          &lt;p&gt;Merci {formData.name}. Votre commande sera traitée prochainement.&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    );
+  }
+
+  if (!localStorage.getItem('token')) {
+    return (
+      &lt;section className='order-page checkout-page'&gt;
+        &lt;div className='order-card'&gt;
+          &lt;div className='order-header'&gt;
+            &lt;p className='order-tag'&gt;Commande&lt;/p&gt;
+            &lt;h2&gt;Connectez-vous pour commander&lt;/h2&gt;
+            &lt;p className='order-subtitle'&gt;Il faut avoir un compte pour passer une commande.&lt;/p&gt;
+          &lt;/div&gt;
+          &lt;button type='button' className='order-submit-btn' onClick={() => navigate('/connexion')}&gt;
+            Se connecter
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    );
+  }
+
+  if (cartItems.length === 0) {
+    return (
+      &lt;section className='order-page checkout-page'&gt;
+        &lt;div className='order-card'&gt;
+          &lt;div className='order-header'&gt;
+            &lt;p className='order-tag'&gt;Commande&lt;/p&gt;
+            &lt;h2&gt;Votre panier est vide&lt;/h2&gt;
+            &lt;p className='order-subtitle'&gt;Ajoutez des produits avant de commander.&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    );
+  }
+
+  return (
+    &lt;section className='order-page checkout-page'&gt;
+      &lt;div className='order-card'&gt;
+        &lt;div className='order-header'&gt;
+          &lt;p className='order-tag'&gt;Commande&lt;/p&gt;
+          &lt;h2&gt;Finaliser votre commande&lt;/h2&gt;
+          &lt;p className='order-subtitle'&gt;Entrez vos informations de livraison.&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;p className='order-total'&gt;Total : {total.toLocaleString('fr-FR')} DA&lt;/p&gt;
+
+        {erreur &amp;&amp; &lt;p className='order-error'&gt;{erreur}&lt;/p&gt;}
+
+        &lt;form className='order-form' onSubmit={handleSubmit}&gt;
+          &lt;div className='order-field-row'&gt;
+            &lt;label className='order-field'&gt;
+              &lt;span&gt;Nom&lt;/span&gt;
+              &lt;input name='name' type='text' value={formData.name} onChange={updateField} required /&gt;
+            &lt;/label&gt;
+            &lt;label className='order-field'&gt;
+              &lt;span&gt;Prénom&lt;/span&gt;
+              &lt;input name='surname' type='text' value={formData.surname} onChange={updateField} required /&gt;
+            &lt;/label&gt;
+          &lt;/div&gt;
+
+          &lt;label className='order-field'&gt;
+            &lt;span&gt;Email&lt;/span&gt;
+            &lt;input name='email' type='email' value={formData.email} onChange={updateField} required /&gt;
+          &lt;/label&gt;
+
+          &lt;label className='order-field'&gt;
+            &lt;span&gt;Wilaya&lt;/span&gt;
+            &lt;select name='state' value={formData.state} onChange={updateField} required&gt;
+              &lt;option value=''&gt;Choisir la wilaya&lt;/option&gt;
+              &lt;option value='Alger'&gt;Alger&lt;/option&gt;
+              &lt;option value='Skikda'&gt;Skikda&lt;/option&gt;
+              &lt;option value='Oran'&gt;Oran&lt;/option&gt;
+              &lt;option value='Constantine'&gt;Constantine&lt;/option&gt;
+              &lt;option value='Tlemcen'&gt;Tlemcen&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/label&gt;
+
+          &lt;button type='submit' className='order-submit-btn' disabled={envoi}&gt;
+            {envoi ? 'Envoi...' : 'Confirmer la commande'}
+          &lt;/button&gt;
+        &lt;/form&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}
+
+export default CheckoutPage;</pre>
+<div class="box tip"><b class="t">💡 Pourquoi vérifier <code>localStorage.getItem('token')</code> ici ?</b>
+Le serveur refuse déjà une commande sans ticket valide (<code>401</code>), mais c'est plus agréable pour la personne qui visite le site de lui dire <b>avant</b> qu'elle doit se connecter, plutôt que de la laisser remplir tout le formulaire pour rien.</div>
+<p>Le fichier <code>reacconter/src/order-form.jsx</code> n'est utilisé par aucune route — tu peux le laisser tel quel pour l'instant, ou le supprimer un jour, ça ne change rien au fonctionnement du site.</p>
+
+
+<!-- ================== 7 ================== -->
+<h2>Étape 7 — Tout tester</h2>
+<div class="fichier terminal">Terminal</div>
+<pre>cd backend
+npm run dev</pre>
+<p>Dans un <b>deuxième</b> terminal :</p>
+<div class="fichier terminal">Terminal</div>
+<pre>cd reacconter
+npm run dev</pre>
+
+<div class="box ok"><b class="t">✅ Checklist</b>
+<ul style="list-style:none;margin-left:0">
+<li>☐ <code>/produits</code> affiche tes produits <b>depuis MongoDB</b></li>
+<li>☐ Inscription puis connexion fonctionnent sur <code>/connexion</code></li>
+<li>☐ Le bouton Google apparaît et connecte bien (si <code>VITE_GOOGLE_CLIENT_ID</code> est rempli)</li>
+<li>☐ Ajoute un produit au panier, rafraîchis la page (F5) : le panier est toujours là</li>
+<li>☐ Non connectée, <code>/checkout</code> propose de se connecter au lieu d'afficher le formulaire</li>
+<li>☐ Connectée, passe la commande : écran <b>« Commande confirmée »</b>, et le panier se vide</li>
+<li>☐ Dans MongoDB, la commande apparaît, et le <code>stock</code> du produit a baissé</li>
+<li>☐ Une quantité énorme (ex. 999) → message d'erreur clair, jamais de commande acceptée</li>
+</ul></div>
+
+<div class="box err"><b class="t">🐞 Dépannage</b>
+<b>« Token invalide » sur une route protégée alors que tu viens de te connecter :</b> vérifie que <code>import 'dotenv/config'</code> est bien la <b>toute première ligne</b> de <code>backend/server.js</code>, et relance le serveur.<br>
+<b>« blocked by CORS policy » (F12) :</b> le serveur n'est pas lancé, ou ton site ne tourne pas sur le port 5173.<br>
+<b>Le catalogue reste vide :</b> as-tu lancé <code>npm run seed</code> au moins une fois dans <code>backend</code> ? Ton <code>.env</code> pointe-t-il vers la bonne base ?<br>
+<b>Le bouton Google n'apparaît pas :</b> vérifie que <code>VITE_GOOGLE_CLIENT_ID</code> est bien rempli dans <code>reacconter/.env</code> (pas seulement <code>.env.example</code>).</div>
+
+<div class="box warn"><b class="t">📌 Et la branche <code>main</code> ?</b>
+Laisse-la de côté pour l'instant — tout ton travail se passe maintenant sur <code>master</code>, c'est la <b>seule</b> branche à pousser sur GitHub. Tu pourras fusionner <code>main</code> dans <code>master</code> plus tard, quand tu auras un peu plus de temps et que tu seras plus à l'aise avec Git ; ce n'est pas urgent.</div>
+
+<div class="fichier terminal">Terminal</div>
+<pre>git add .
+git commit -m "Commandes securisees, comptes connectes a l'API, panier persistant"
+git push origin master</pre>
+
+</div>
+
+<script>
+(function () {
+  var pres = document.querySelectorAll('pre');
+  for (var i = 0; i < pres.length; i++) {
+    (function (pre) {
+      if (pre.classList.contains('nocopy')) return;
+      var texte = pre.textContent;
+      var bouton = document.createElement('button');
+      bouton.className = 'copier';
+      bouton.type = 'button';
+      bouton.textContent = '📋 Copier';
+      bouton.onclick = function () {
+        function ok() {
+          bouton.textContent = '✅ Copié !';
+          bouton.classList.add('fait');
+          setTimeout(function () { bouton.textContent = '📋 Copier'; bouton.classList.remove('fait'); }, 2000);
+        }
+        function secours() {
+          var zone = document.createElement('textarea');
+          zone.value = texte;
+          zone.style.position = 'fixed';
+          zone.style.opacity = '0';
+          document.body.appendChild(zone);
+          zone.select();
+          try { document.execCommand('copy'); ok(); } catch (e) { bouton.textContent = 'Sélectionne + Ctrl+C'; }
+          document.body.removeChild(zone);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(texte).then(ok, secours);
+        } else {
+          secours();
+        }
+      };
+      pre.appendChild(bouton);
+    })(pres[i]);
+  }
+})();
+</script>
+
+</body>
+</html>
