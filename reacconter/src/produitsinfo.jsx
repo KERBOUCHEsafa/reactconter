@@ -2,6 +2,21 @@ import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import api from './api/axios';
 import './produits-cart.css';
+import pic1 from './pic.png/pic1.jpeg';
+import pic2 from './pic.png/pic2.jpeg';
+import pic3 from './pic.png/pic3.jpeg';
+import pic4 from './pic.png/pic4.jpeg';
+import pic5 from './pic.png/pic5.jpeg';
+import pic6 from './pic.png/pic6.jpeg';
+
+const productImages = {
+  1: pic1,
+  2: pic2,
+  3: pic3,
+  4: pic4,
+  5: pic5,
+  6: pic6,
+};
 
 function ProductDetails({ addToCart }) {
 
@@ -45,6 +60,9 @@ function ProductDetails({ addToCart }) {
     );
   }
 
+  const resolvedId = Number(product.id ?? product._id?.toString().slice(-1) ?? 1);
+  const imageSource = productImages[resolvedId] || product.image || 'https://placehold.co/600x600/efe7f4/5a2a6d?text=Product';
+
   return (
     <div className="product-details">
 
@@ -60,7 +78,7 @@ function ProductDetails({ addToCart }) {
         <div className="details-image">
 
           <img
-            src={product.image}
+            src={imageSource}
             alt={product.name}
           />
 

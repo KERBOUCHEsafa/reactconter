@@ -6,13 +6,24 @@ const api = axios.create({
   baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api'
 });
 
-let token = null;
+function getStoredToken() {
+  try {
+    return localStorage.getItem('token');
+  } catch {
+    return null;
+  }
+}
 
 export function setAuthToken(t) {
-  token = t;
+  try {
+    localStorage.setItem('token', t || '');
+  } catch {
+    // ignore write errors
+  }
 }
 
 api.interceptors.request.use(function (config) {
+  const token = getStoredToken();
   if (token) {
     config.headers.Authorization = 'Bearer ' + token;
   }
